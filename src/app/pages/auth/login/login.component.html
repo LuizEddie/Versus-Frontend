@@ -1,0 +1,14 @@
+<div>
+    <form (ngSubmit)="handleLogin()" [formGroup]="formData">
+        <div class="mb-2">
+           <app-input label="Email" type="email" placeholder="Digite o seu email" formControlName="email" [required]="true"></app-input>
+        </div>
+        <div class="m-2">
+            <app-button type="submit">Entrar</app-button>
+        </div>
+        <div class="flex flex-row justify-between">
+            <app-link link="/auth/register">Cadastrar</app-link>
+            <app-link link="/auth/forgot-password">Esqueci a senha</app-link>
+        </div>
+    </form>
+</div>
