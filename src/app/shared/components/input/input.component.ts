@@ -12,7 +12,6 @@ export class InputComponent {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type = 'text';
-  @Input() id?: string;
   @Input() required = false;
 
   value: any = '';

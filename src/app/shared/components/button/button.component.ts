@@ -10,12 +10,12 @@ import { Variant } from '../../models/variants.models';
 export class ButtonComponent {
   @Input() type: "button" | "reset" | "submit" = "button";
   @Input() variant: Variant = "primary";
-
+  @Input() disabled: boolean = false;
   constructor(){
 
   }
 
   getButtonClass(){
-    return `${BUTTON.default[this.variant]} pr-5 pl-5 p-2 rounded-[0.5rem] cursor-pointer`;
+    return `${BUTTON.default[this.variant]} pr-5 pl-5 p-2 rounded-[0.5rem] cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed`;
   }
 }

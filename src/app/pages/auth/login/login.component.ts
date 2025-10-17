@@ -1,39 +1,52 @@
 import { Component } from '@angular/core';
 import { ButtonComponent } from "../../../shared/components/button/button.component";
 import { LinkComponent } from "../../../shared/components/link/link.component";
-import { FormControl, FormGroup,ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoginService } from './_services/login.service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { InputComponent } from "../../../shared/components/input/input.component";
+import { InputGroupComponent } from '../../../shared/components/input-group/input-group.component';
 
 @Component({
   selector: 'app-login',
-  imports: [ButtonComponent, LinkComponent, ReactiveFormsModule, InputComponent],
+  imports: [ButtonComponent, LinkComponent, ReactiveFormsModule, InputComponent, InputGroupComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true
 })
 export class LoginComponent {
   formData = new FormGroup({
-    email: new FormControl({value: '', disabled: false}, [Validators.required, Validators.email])
-  })
-  constructor(private loginService: LoginService, private router: Router, private toast: ToastService){}
+    email: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
+    password: new FormControl({ value: '', disabled: false }, [Validators.required])
+  });
+  passwordType = 'password'
+  constructor(private loginService: LoginService, private router: Router, private toast: ToastService) { 
+  }
 
-  handleLogin(){
-    console.log(this.formData);
-    // const toastId = this.toast.show('Carregando...', 'loading', 0, true);
+  changePasswordInput() {
+    this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
+  }
 
-    // this.loginService.login(this.formData).subscribe({
-    //   next: (response: any) =>{
-    //     localStorage.setItem("token", response.data);
-    //     this.router.navigate(['/home']);
-    //     this.toast.finishToast(toastId, {message: response.message, type: 'success'});
-    //   },
-    //   error: (err: any) => {
-    //     this.toast.finishToast(toastId, {message: err.error.message, type: 'warning'});
-    //   }
-    // })
+  handleLogin() {
+    if (!this.formData.valid) {
+      this.toast.warning("Por favor, preencha os campos corretamente!");
+      return;
+    }
+
+    const toastId = this.toast.show('Carregando...', 'loading', 0, true);
+
+    this.loginService.login(this.formData).subscribe({
+      next: (response: any) =>{
+        localStorage.setItem("token", response.data);
+        this.router.navigate(['/home']);
+        this.formData.reset();
+        this.toast.finishToast(toastId, {message: response.message, type: 'success'});
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning'});
+      }
+    })
   }
 
 }

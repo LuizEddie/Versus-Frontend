@@ -3,19 +3,19 @@ import { ButtonComponent } from "../../../shared/components/button/button.compon
 import { InputComponent } from "../../../shared/components/input/input.component";
 import { LinkComponent } from "../../../shared/components/link/link.component";
 import { ForgotPasswordService } from './_services/forgot-password.service';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '../../../shared/components/toast/services/toast.service';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [ButtonComponent, InputComponent, LinkComponent, FormsModule],
+  imports: [ButtonComponent, InputComponent, LinkComponent, ReactiveFormsModule],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent {
-  formData = {
-    email: ''
-  }
+  formData = new FormGroup({
+    email: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
+  });
 
   constructor(private forgotPasswordService: ForgotPasswordService, private toast: ToastService){
 
@@ -26,11 +26,11 @@ export class ForgotPasswordComponent {
     
     this.forgotPasswordService.sendPasswordEmailRequest(this.formData).subscribe({
       next: (response: any) => {
-        this.formData.email = '';
+        this.formData.reset();
         this.toast.finishToast(toastId, {message: response.message, type: 'success'});
       },
       error: (err: any) => {
-        this.toast.finishToast(toastId, {message: err.error.message, type: 'warning'});
+        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning'});
       }
     })
   }

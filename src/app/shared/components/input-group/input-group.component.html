@@ -1,31 +1,50 @@
 <div class="flex flex-col text-start w-full">
-    <label [for]="id" class="mb-1 text-gray-950 font-medium">{{label}}</label>
+    <label class="mb-1 text-gray-950 font-medium">{{label}}</label>
     <div class="flex flex-row text-center w-full">
-        
-        @if(beforeOrAfterInput === 'before'){
-            <div class="flex bg-gray-200 rounded-[0.5rem] justify-center items-center text-center w-2/12 cursor-pointer" (click)="inputGroupAddonFunction?.()">
-                @if(iconOrText === 'icon'){
-                    <i class="pi {{addonIcon}}"></i>
-                }
 
-                @if(iconOrText === 'text'){
-                    <span>{{addonText}}</span>
-                }
-            </div>
+        @if(beforeOrAfterInput === 'before'){
+        <div class="flex bg-gray-200 rounded-[0.5rem] justify-center items-center text-center w-2/12 cursor-pointer"
+            (click)="inputGroupAddonFunction?.()">
+            @if(iconOrText === 'icon'){
+            <i class="pi {{addonIcon}}"></i>
+            }
+
+            @if(iconOrText === 'text'){
+            <span>{{addonText}}</span>
+            }
+        </div>
         }
 
-        <input [type]="type" [id]="id" [name]="name" class="border border-gray-300 bg-white rounded-[0.5rem] p-1 w-10/12" [placeholder]="placeholder" [(ngModel)]="model" (ngModelChange)="modelChange.emit($event)"/>
-       
-        @if(beforeOrAfterInput === 'after'){
-            <div class="flex bg-gray-200 rounded-[0.5rem] justify-center items-center w-2/12 cursor-pointer" (click)="inputGroupAddonFunction?.()">
-                @if(iconOrText === 'icon'){
-                    <i class="pi {{addonIcon}} text-gray-500"></i>
-                }
+        <input [type]="type" class="border border-gray-300 bg-white rounded-[0.5rem] p-1 w-10/12 
+            focus:outline-none focus:ring transition-all
+            disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed
+            [class.border-gray-300]='!invalid'
+            [class.border-red-500]='invalid'
+            [class.border-blue-300]='!invalid'
+            [class.border-red-300]='!invalid'" [placeholder]="placeholder" [disabled]="disabled" [value]="value"
+            (input)="handleInput($event)" (blur)="onTouched()" />
 
-                @if(iconOrText === 'text'){
-                    <span class="text-gray-500">{{addonText}}</span>
-                }
-            </div>
+        @if(beforeOrAfterInput === 'after'){
+        <div class="flex bg-gray-200 rounded-[0.5rem] justify-center items-center w-2/12 cursor-pointer"
+            (click)="inputGroupAddonFunction?.()">
+            @if(iconOrText === 'icon'){
+            <i class="pi {{addonIcon}} text-gray-500"></i>
+            }
+
+            @if(iconOrText === 'text'){
+            <span class="text-gray-500">{{addonText}}</span>
+            }
+        </div>
         }
     </div>
+    @if(invalid){
+    <div class="text-sm text-red-600 mt-1">
+        @if(control?.errors?.['required']){
+        <div>Este campo é obrigatório.</div>
+        }
+        @if(control?.errors?.['email']){
+        <div>Digite um email válido.</div>
+        }
+    </div>
+    }
 </div>
