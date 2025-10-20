@@ -5,24 +5,15 @@
     </label>
     <input [type]="type" class="border border-gray-300 bg-white rounded-[0.5rem] p-1 
             focus:outline-none focus:ring transition-all
-            disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed
-            [class.border-gray-300]='!invalid'
-            [class.border-red-500]='invalid'
-            [class.border-blue-300]='!invalid'
-            [class.border-red-300]='!invalid'" 
+            disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed" 
         [placeholder]="placeholder" 
         [disabled]="disabled" 
         [value]="value" 
         (input)="handleInput($event)"
         (blur)="onTouched()" />
     @if(invalid){
-    <div class="text-sm text-red-600 mt-1">
-        @if(control?.errors?.['required']){
-        <div>Este campo é obrigatório.</div>
-        }
-        @if(control?.errors?.['email']){
-        <div>Digite um email válido.</div>
-        }
+    <div class="text-sm text-yellow-600 mt-1">
+        {{ errorMessage }}
     </div>
     }
 </div>

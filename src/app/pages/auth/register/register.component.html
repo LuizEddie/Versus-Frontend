@@ -1,12 +1,13 @@
-<form>
+<h1 class="text-2xl">Cadastro</h1>
+<form (ngSubmit)="handleRegister()" [formGroup]="formData">
     <div class="mb-2">
-        <app-input label="Nome" id="nome" name="nome" placeholder="Digite o seu nome"></app-input>
+        <app-input label="Nome" placeholder="Digite o seu nome" [required]="true" formControlName="name"></app-input>
     </div>
     <div class="mb-2">
-        <app-input label="Email" id="email" name="email" placeholder="Digite o seu email"></app-input>
+        <app-input label="Email" placeholder="Digite o seu email" [required]="true" formControlName="email"></app-input>
     </div>
     <div class="mb-2">
-        <app-button type="submit">Cadastrar</app-button>
+        <app-button type="submit" [disabled]="disableForm">Cadastrar</app-button>
     </div>
     <app-link link="/auth/login">Ir para Login</app-link>
 </form>

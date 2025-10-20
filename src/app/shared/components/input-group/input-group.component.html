@@ -1,5 +1,8 @@
 <div class="flex flex-col text-start w-full">
-    <label class="mb-1 text-gray-950 font-medium">{{label}}</label>
+    <label class="mb-1 text-gray-950 font-medium">
+        {{label}}
+        @if(required) { <span class="text-red-600">*</span> }
+    </label>
     <div class="flex flex-row text-center w-full">
 
         @if(beforeOrAfterInput === 'before'){
@@ -38,13 +41,8 @@
         }
     </div>
     @if(invalid){
-    <div class="text-sm text-red-600 mt-1">
-        @if(control?.errors?.['required']){
-        <div>Este campo é obrigatório.</div>
-        }
-        @if(control?.errors?.['email']){
-        <div>Digite um email válido.</div>
-        }
+    <div class="text-sm text-yellow-600 mt-1">
+        {{ errorMessage }}
     </div>
     }
 </div>

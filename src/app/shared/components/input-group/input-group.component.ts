@@ -1,5 +1,6 @@
 import { Component, Input, Optional, Self } from '@angular/core';
 import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { getValidationMessage } from '../../utils/validation-messages';
 
 @Component({
   selector: 'app-input-group',
@@ -61,5 +62,9 @@ export class InputGroupComponent {
 
   get invalid() {
     return this.control?.invalid && (this.control?.touched || this.control?.dirty);
+  }
+  
+  get errorMessage(){
+    return getValidationMessage(this.control?.errors ?? null);
   }
 }

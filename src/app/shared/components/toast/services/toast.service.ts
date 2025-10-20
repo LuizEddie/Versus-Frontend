@@ -44,26 +44,9 @@ export class ToastService {
     this.toasts = this.toasts.filter((t) => t.id !== id);
   }
 
-  finishToast(toastId:number, data: Partial<Omit<Toast, 'id'>>){
+  finishToast(toastId:number, data: Partial<Omit<Toast, 'id'>>, duration = 3000){
     this.update(toastId, data);
-    setTimeout(() => this.remove(toastId), 3000);
-  }
-
-  async wrapRequest<T>(
-    obs$: Observable<T>,
-    messages: { loading: string, success: string, warning: string}
-  ): Promise<T | void> {
-    const toastId = this.show(messages.loading, 'loading', 0, true);
-
-    try{
-      const result = await firstValueFrom(obs$);
-      this.update(toastId, { message: messages.success, type: 'success'});
-      setTimeout(() => this.remove(toastId), 3000);
-      return result;
-    }catch(err){
-      this.update(toastId, { message: messages.warning, type: 'warning'});
-      setTimeout(() => this.remove(toastId), 3000);
-    }
+    setTimeout(() => this.remove(toastId), duration);
   }
 
   success(msg: string) {
