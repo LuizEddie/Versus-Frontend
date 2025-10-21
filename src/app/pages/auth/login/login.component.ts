@@ -16,7 +16,7 @@ import { InputGroupComponent } from '../../../shared/components/input-group/inpu
   standalone: true
 })
 export class LoginComponent {
-  formData = new FormGroup({
+  formData: FormGroup  = new FormGroup({
     email: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
     password: new FormControl({ value: '', disabled: false }, [Validators.required])
   });
