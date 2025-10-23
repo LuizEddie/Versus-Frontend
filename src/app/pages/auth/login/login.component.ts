@@ -38,18 +38,18 @@ export class LoginComponent {
     }
     this.disableForm = true;
 
-    const toastId = this.toast.show('Fazendo login, aguarde...', 'loading', 0, true);
+    const toastId = this.toast.show('Fazendo login, aguarde...', 'loading', 0, true, false);
 
     this.loginService.login(this.formData.value).subscribe({
       next: (response: any) =>{
         localStorage.setItem("token", response.data);
         this.router.navigate(['/home']);
         this.formData.reset();
-        this.toast.finishToast(toastId, {message: response.message, type: 'success'});
+        this.toast.finishToast(toastId, {message: response.message, type: 'success', duration: 5000, closeable: true, persistent: false});
         this.disableForm = false;
       },
       error: (err: any) => {
-        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning'});
+        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning', duration: 5000, closeable: true, persistent: false});
         this.disableForm = false;
       }
     })

@@ -22,15 +22,15 @@ export class ForgotPasswordComponent {
   }
 
   handleForgotPassword(){
-    const toastId = this.toast.show('Carregando...', 'loading', 0, true);
+    const toastId = this.toast.show('Carregando...', 'loading', 0, true, false);
     
     this.forgotPasswordService.sendPasswordEmailRequest(this.formData).subscribe({
       next: (response: any) => {
         this.formData.reset();
-        this.toast.finishToast(toastId, {message: response.message, type: 'success'});
+        this.toast.finishToast(toastId, {message: response.message, type: 'success', duration: 5000, closeable: true, persistent: false});
       },
       error: (err: any) => {
-        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning'});
+        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning', duration: 5000, closeable: true, persistent: false});
       }
     })
   }
