@@ -13,8 +13,8 @@ export class InputComponent {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
-
-  required: boolean = false;
+  @Input() required: boolean = false;
+  
   value: any = '';
   disabled: boolean = false;
 
