@@ -1,8 +1,8 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { Toast } from '../_models/toast.models';
-import { ToastService } from '../services/toast.service';
+import { Toast } from '../../../models/toast.models';
 import { NgClass } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { ToastService } from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-toast-item',

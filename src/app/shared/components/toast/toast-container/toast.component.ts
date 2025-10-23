@@ -1,6 +1,6 @@
-import { Component, HostListener, Input } from '@angular/core';
-import { ToastService } from '../services/toast.service';
+import { Component } from '@angular/core';
 import { ToastItemComponent } from "../toast-item/toast-item.component";
+import { ToastService } from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-toast',

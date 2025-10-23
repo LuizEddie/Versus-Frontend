@@ -4,8 +4,8 @@ import { ButtonComponent } from "../../../shared/components/button/button.compon
 import { FormControl, FormGroup } from '@angular/forms';
 import { ResetPasswordService } from '../_services/reset-password.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-confirm-register',

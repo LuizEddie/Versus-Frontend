@@ -4,9 +4,9 @@ import { ButtonComponent } from "../../../shared/components/button/button.compon
 import { Router } from '@angular/router';
 import { LinkComponent } from "../../../shared/components/link/link.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { RegisterService } from './_services/register.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-register',

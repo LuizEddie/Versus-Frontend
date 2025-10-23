@@ -4,10 +4,10 @@ import { LinkComponent } from "../../../shared/components/link/link.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoginService } from './_services/login.service';
 import { Router } from '@angular/router';
-import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { InputComponent } from "../../../shared/components/input/input.component";
 import { InputGroupComponent } from '../../../shared/components/input-group/input-group.component';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-login',

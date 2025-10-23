@@ -4,9 +4,9 @@ import { InputComponent } from "../../../shared/components/input/input.component
 import { LinkComponent } from "../../../shared/components/link/link.component";
 import { ForgotPasswordService } from './_services/forgot-password.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-forgot-password',
