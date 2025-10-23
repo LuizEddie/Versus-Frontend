@@ -47,7 +47,7 @@ export class ConfirmRegisterComponent {
     this.resetPasswordService.resetPassword(form.value).subscribe({
       next: (response: any) => {
         form.reset();
-        this.toast.finishToast(toastId, {message: `${response.message} Dentro de 5 segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: `${response.message} Dentro de alguns segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
         setTimeout(()=>{
           this.disableForm = false;
           this.router.navigate(['/auth/login']);

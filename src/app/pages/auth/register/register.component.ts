@@ -31,12 +31,13 @@ export class RegisterComponent {
       return;
     }
     this.disableForm = true;
+
     const toastId = this.toast.show({message: "Efetuando registro, aguarde...", type:'loading', duration: 0, persistent: true, closeable: false});
 
     this.registerService.register(this.formData.value).subscribe({
       next: (response: any) => {
         this.formData.reset();
-        this.toast.finishToast(toastId, {message: `${response.message}\n Dentro de 5 segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: `${response.message}\n Dentro de alguns segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
         setTimeout(()=>{
           this.disableForm = false;
           this.router.navigate(['/auth/login']);
