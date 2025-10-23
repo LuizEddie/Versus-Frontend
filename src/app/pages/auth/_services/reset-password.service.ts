@@ -12,6 +12,6 @@ export class ResetPasswordService {
   constructor(private http: HttpClient) { }
 
   resetPassword(credentials: any){
-    return this.http.post(`${this.url}/update-password`, credentials);
+    return this.http.patch(`${this.url}/update-password`, credentials);
   }
 }

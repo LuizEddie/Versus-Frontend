@@ -16,13 +16,13 @@ export class PasswordFormComponent {
     password: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(8)]),
     confirmPassword: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(8)]),
   },
-  { validators: [PasswordFormComponent.passwordMatchValidator]}
-);
+    { validators: [PasswordFormComponent.passwordMatchValidator] }
+  );
   passwordType: string = 'password';
   confirmPasswordType: string = 'password';
 
-  onSubmit(){
-    if(this.formData.valid){
+  onSubmit() {
+    if (this.formData.valid) {
       this.formSubmit.emit(this.formData);
     } else {
       this.formData.markAllAsTouched();
@@ -37,13 +37,13 @@ export class PasswordFormComponent {
     this.confirmPasswordType = this.confirmPasswordType === 'text' ? 'password' : 'text';
   }
 
-  static passwordMatchValidator(control: AbstractControl): ValidationErrors | null{
+  static passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
 
-    if(!password || !confirmPassword) return null;
+    if (!password || !confirmPassword) return null;
 
-    return password.value === confirmPassword.value ? null : { passwordMismatch: true};
+    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
 }

@@ -1,4 +1,4 @@
 <h1 class="text-2xl">Confirmar Cadastro</h1>
 <app-password-form (formSubmit)="handleRegister($event)">
-    <app-button type="submit">Finalizar Cadastro</app-button>
+    <app-button type="submit" [disabled]="disableForm">Finalizar Cadastro</app-button>
 </app-password-form>

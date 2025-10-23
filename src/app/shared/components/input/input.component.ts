@@ -1,5 +1,5 @@
-import { Component, Input, Optional, Self} from '@angular/core';
-import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, Input, Optional, Self } from '@angular/core';
+import { NgControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { getValidationMessage } from '../../utils/validation-messages';
 
 @Component({
@@ -12,20 +12,20 @@ import { getValidationMessage } from '../../utils/validation-messages';
 export class InputComponent {
   @Input() label: string = '';
   @Input() placeholder: string = '';
-  @Input() type = 'text';
-  @Input() required = false;
+  @Input() type: string = 'text';
 
+  required: boolean = false;
   value: any = '';
-  disabled = false;
+  disabled: boolean = false;
 
-  constructor(@Optional() @Self() public ngControl: NgControl){
-    if(this.ngControl){
+  constructor(@Optional() @Self() public ngControl: NgControl) {
+    if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
 
-  onChange = (value: any) => {};
-  onTouched = () => {};
+  onChange = (value: any) => { };
+  onTouched = () => { };
 
   writeValue(value: any): void {
     this.value = value ?? '';
@@ -35,7 +35,7 @@ export class InputComponent {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void{
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
@@ -43,13 +43,13 @@ export class InputComponent {
     this.disabled = isDisabled;
   }
 
-  handleInput(event: Event){
+  handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
     this.onChange(this.value);
   }
 
-    // Funções utilitárias
+  // Funções utilitárias
   get control() {
     return this.ngControl?.control;
   }
@@ -58,7 +58,7 @@ export class InputComponent {
     return this.control?.invalid && (this.control?.touched || this.control?.dirty);
   }
 
-  get errorMessage(){
+  get errorMessage() {
     return getValidationMessage(this.control?.errors ?? null);
   }
 }

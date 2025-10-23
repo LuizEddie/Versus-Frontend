@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, Observable } from 'rxjs';
-
-interface Toast {
-  message: string;
-  type: 'success' | 'error' | 'info' | 'warning' | 'loading';
-  id: number;
-  persistent?: boolean;
-}
-
+import { Toast } from '../_models/toast.models';
+import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,21 +10,16 @@ export class ToastService {
   toasts: Toast[] = [];
   private idCounter = 0;
 
+  toastUpdated = new Subject<Toast>();
+
   private nextId() {
     return ++this.idCounter;
   }
 
-  show(message: string, type: Toast['type'] = 'info', duration = 3000, persistent = false): number {
+  show(message: string, type: Toast['type'] = 'info', duration = 3000, persistent = false, closeable = true): number {
     const id = this.nextId();
-    const toast = { message, type, id, persistent };
+    const toast = { message, type, id, persistent, duration, closeable };
     this.toasts.push(toast);
-
-    if (!persistent) {
-      setTimeout(() => {
-        this.toasts = this.toasts.filter(t => t !== toast);
-      }, duration);
-    }
-
     return id;
   }
 
@@ -44,9 +32,13 @@ export class ToastService {
     this.toasts = this.toasts.filter((t) => t.id !== id);
   }
 
-  finishToast(toastId:number, data: Partial<Omit<Toast, 'id'>>, duration = 3000){
+  finishToast(toastId:number, data: Partial<Omit<Toast, 'id'>>){
     this.update(toastId, data);
-    setTimeout(() => this.remove(toastId), duration);
+    const updated = this.toasts.find(t => t.id === toastId);
+    if (updated) {
+      // emite o objeto atualizado
+      this.toastUpdated.next({ ...updated });
+    }
   }
 
   success(msg: string) {

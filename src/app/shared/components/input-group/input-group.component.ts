@@ -1,5 +1,5 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { NgControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { getValidationMessage } from '../../utils/validation-messages';
 
 @Component({
@@ -17,9 +17,9 @@ export class InputGroupComponent {
   @Input() inputGroupAddonFunction?: () => void;
   @Input() label: string = '';
   @Input() placeholder: string = '';
-  @Input() type = 'text';
+  @Input() type: string = 'text';
   @Input() id?: string;
-  @Input() required = false;
+  @Input() required: boolean = false;
 
   value: any = '';
   disabled = false;
