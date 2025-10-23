@@ -21,7 +21,7 @@ export class ToastItemComponent {
   constructor(public toastService: ToastService){
   }
 
-  ngOnInit(){
+  ngOnInit(){    
     if(!this.toast.persistent && (this.toast?.duration ?? 0) > 0) this.startTimer();
 
     this.sub = this.toastService.toastUpdated.subscribe((updToast) => {

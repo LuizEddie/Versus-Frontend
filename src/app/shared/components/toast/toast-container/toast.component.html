@@ -1,6 +1,6 @@
 @if (toastService.toasts.length > 0) {
     <div class="fixed top-4 right-4 z-50 flex flex-col gap-2 min-w-[20rem] max-w-[20rem]">
-        @for (toast of toastService.toasts; track $index) {
+        @for (toast of toastService.toasts; track toast.id) {
             <app-toast-item [toast]="toast"></app-toast-item>
         }
     </div>
