@@ -42,12 +42,12 @@ export class ConfirmRegisterComponent {
 
     form.addControl('token', new FormControl(this.token));
 
-    const toastId = this.toast.show("Confirmando registro, aguarde...", "loading", 0, true, false);
+    const toastId = this.toast.show({message: "Confirmando registro, aguarde...", type:'loading', duration: 0, persistent: true, closeable: false});
 
     this.resetPasswordService.resetPassword(form.value).subscribe({
       next: (response: any) => {
         form.reset();
-        this.toast.finishToast(toastId, {message: `${response.message}. Dentro de 5 segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: `${response.message} Dentro de 5 segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
         setTimeout(()=>{
           this.disableForm = false;
           this.router.navigate(['/auth/login']);

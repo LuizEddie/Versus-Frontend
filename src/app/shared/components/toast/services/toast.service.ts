@@ -16,9 +16,16 @@ export class ToastService {
     return ++this.idCounter;
   }
 
-  show(message: string, type: Toast['type'] = 'info', duration = 3000, persistent = false, closeable = true): number {
+  show(data: Partial<Omit<Toast, 'id'>>): number {
     const id = this.nextId();
-    const toast = { message, type, id, persistent, duration, closeable };
+    const toast = { 
+      message: data?.message ?? '', 
+      type: data?.type || 'info', 
+      id, 
+      persistent: data?.persistent ?? false, 
+      duration: data?.duration ?? 3000, 
+      closeable: data?.closeable ?? true 
+    };
     this.toasts.push(toast);
     return id;
   }
@@ -42,19 +49,19 @@ export class ToastService {
   }
 
   success(msg: string) {
-    this.show(msg, 'success');
+    this.show({message: msg, type: 'success'});
   }
 
   error(msg: string) {
-    this.show(msg, 'error');
+    this.show({message: msg, type: 'error'});
   }
 
   info(msg: string) {
-    this.show(msg, 'info');
+    this.show({message: msg});
   }
 
   warning(msg: string) {
-    this.show(msg, 'warning');
+    this.show({message: msg, type: 'warning'});
   }
 
 }

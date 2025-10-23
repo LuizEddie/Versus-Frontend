@@ -5,6 +5,7 @@ import { LinkComponent } from "../../../shared/components/link/link.component";
 import { ForgotPasswordService } from './_services/forgot-password.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '../../../shared/components/toast/services/toast.service';
+import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 
 @Component({
   selector: 'app-forgot-password',
@@ -22,7 +23,7 @@ export class ForgotPasswordComponent {
   }
 
   handleForgotPassword(){
-    const toastId = this.toast.show('Carregando...', 'loading', 0, true, false);
+    const toastId = this.toast.show({message: "Enviando solicitação, aguarde...", type:'loading', duration: 0, persistent: true, closeable: false});
     
     this.forgotPasswordService.sendPasswordEmailRequest(this.formData).subscribe({
       next: (response: any) => {
@@ -30,7 +31,7 @@ export class ForgotPasswordComponent {
         this.toast.finishToast(toastId, {message: response.message, type: 'success', duration: 5000, closeable: true, persistent: false});
       },
       error: (err: any) => {
-        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false});
       }
     })
   }

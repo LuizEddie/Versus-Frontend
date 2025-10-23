@@ -6,6 +6,7 @@ import { LinkComponent } from "../../../shared/components/link/link.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { RegisterService } from './_services/register.service';
+import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 
 @Component({
   selector: 'app-register',
@@ -30,19 +31,19 @@ export class RegisterComponent {
       return;
     }
     this.disableForm = true;
-    const toastId = this.toast.show("Efetuando registro, aguarde...", 'loading', 0, true, false);
+    const toastId = this.toast.show({message: "Efetuando registro, aguarde...", type:'loading', duration: 0, persistent: true, closeable: false});
 
     this.registerService.register(this.formData.value).subscribe({
       next: (response: any) => {
         this.formData.reset();
-        this.toast.finishToast(toastId, {message: `${response.message}. Dentro de 5 segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: `${response.message}\n Dentro de 5 segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
         setTimeout(()=>{
           this.disableForm = false;
           this.router.navigate(['/auth/login']);
         }, 5000);
       },
       error: (err: any) => {
-        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false});
         this.disableForm = false;
       }
     })

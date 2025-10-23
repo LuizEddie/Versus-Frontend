@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../shared/components/toast/services/toast.service';
 import { InputComponent } from "../../../shared/components/input/input.component";
 import { InputGroupComponent } from '../../../shared/components/input-group/input-group.component';
+import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +39,7 @@ export class LoginComponent {
     }
     this.disableForm = true;
 
-    const toastId = this.toast.show('Fazendo login, aguarde...', 'loading', 0, true, false);
+    const toastId = this.toast.show({message: "Efetuando login, aguarde...", type:'loading', duration: 0, persistent: true, closeable: false});
 
     this.loginService.login(this.formData.value).subscribe({
       next: (response: any) =>{
@@ -49,7 +50,7 @@ export class LoginComponent {
         this.disableForm = false;
       },
       error: (err: any) => {
-        this.toast.finishToast(toastId, {message: err?.error?.message || 'Ocorreu um erro inesperado!', type: 'warning', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false});
         this.disableForm = false;
       }
     })

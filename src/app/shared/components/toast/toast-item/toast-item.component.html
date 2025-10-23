@@ -1,29 +1,35 @@
-<div class="px-4 py-2 rounded-lg shadow-md text-white transition-all duration-300 cursor-pointer" [ngClass]="{
+<div class="px-4 py-4 rounded-t-lg shadow-md text-white transition-all duration-300 cursor-pointer flex flex-row opacity-90 bg-black"
+    (click)="close()">
+    <div class="mr-1">
+    @switch (toast.type) {
+    @case ('loading') {
+    <i class="pi pi-spin pi-spinner text-xl"></i>
+    }
+    @case('success'){
+    <i class="pi pi-check text-xl"></i>
+    }
+    @case('error'){
+    <i class="pi pi-times text-xl"></i>
+    }
+    @case('warning'){
+    <i class="pi pi-exclamation-circle text-xl"></i>
+    }
+    @case('info'){
+    <i class="pi pi-info-circle text-xl"></i>
+    }
+    @default(){
+    <i class="pi pi-info-circle text-xl"></i>
+    }
+    }
+    </div>
+    <div>
+        <span>{{toast.message}}</span>
+    </div>
+</div>
+<div class="h-1 rounded-b-lg" [ngClass]="{
                     'bg-green-500': toast.type === 'success',
                     'bg-red-500': toast.type === 'error',
                     'bg-blue-500': toast.type === 'info',
                     'bg-yellow-500': toast.type === 'warning',
                     'bg-orange-500': toast.type === 'loading'
-                }" (click)="close()">
-    @switch (toast.type) {
-    @case ('loading') {
-    <span class="text-xl">⏳</span>
-    }
-    @case('success'){
-    <span class="text-xl">✅</span>
-    }
-    @case('error'){
-    <span class="text-xl">❌</span>
-    }
-    @case('warning'){
-    <span class="text-xl">⚠️</span>
-    }
-    @case('info'){
-    <span class="text-xl">ℹ️</span>
-    }
-    @default(){
-    <span class="text-xl">ℹ️</span>
-    }
-    }
-    <span>{{toast.message}}</span>
-</div>
+                }"></div>
