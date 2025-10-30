@@ -8,6 +8,7 @@ import { InputComponent } from "../../../shared/components/input/input.component
 import { InputGroupComponent } from '../../../shared/components/input-group/input-group.component';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { AuthService } from '../../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
   passwordType: string = 'password'
   disableForm: boolean = false;
 
-  constructor(private loginService: LoginService, private router: Router, private toast: ToastService) { 
+  constructor(private loginService: LoginService, private router: Router, private toast: ToastService, private authService: AuthService) { 
     this.disableForm = false;
   }
 
@@ -43,7 +44,7 @@ export class LoginComponent {
 
     this.loginService.login(this.formData.value).subscribe({
       next: (response: any) =>{
-        localStorage.setItem("token", response.data);
+        this.authService.setAccessToken(response.data);
         this.router.navigate(['/home']);
         this.formData.reset();
         this.toast.finishToast(toastId, {message: response.message, type: 'success', duration: 5000, closeable: true, persistent: false});

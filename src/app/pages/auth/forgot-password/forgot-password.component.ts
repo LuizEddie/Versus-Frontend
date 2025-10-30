@@ -12,7 +12,8 @@ import { ToastService } from '../../../shared/services/toast/toast.service';
   selector: 'app-forgot-password',
   imports: [ButtonComponent, InputComponent, LinkComponent, ReactiveFormsModule],
   templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.css'
+  styleUrl: './forgot-password.component.css',
+  standalone: true
 })
 export class ForgotPasswordComponent {
   formData = new FormGroup({

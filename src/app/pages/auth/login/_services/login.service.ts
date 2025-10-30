@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LoginService {
 
-  private url = `${environment.url}/Auth`;
+  private readonly url = `${environment.url}/Auth`;
 
   constructor(private http: HttpClient) { }
 
