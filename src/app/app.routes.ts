@@ -7,6 +7,8 @@ import { ConfirmNewPasswordComponent } from './pages/auth/confirm-new-password/c
 import { ConfirmRegisterComponent } from './pages/auth/confirm-register/confirm-register.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HomeComponent } from './pages/home/home.component';
+import { authGuard } from './shared/guards/auth/auth.guard';
+import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 
 export const routes: Routes = [
     {
@@ -27,7 +29,7 @@ export const routes: Routes = [
             },
             {
                 path: 'confirm-new-password',
-                component: ConfirmNewPasswordComponent    
+                component: ConfirmNewPasswordComponent
             },
             {
                 path: 'confirm-register',
@@ -35,19 +37,25 @@ export const routes: Routes = [
             },
             {
                 path: '',
-                redirectTo: 'login', 
+                redirectTo: 'login',
                 pathMatch: 'full'
             }
         ]
     },
     {
-        path: 'home',
-        component: HomeComponent
-    },
-    {
         path: '',
-        redirectTo: 'auth',
-        pathMatch: 'full'
+        component: AppLayoutComponent,
+        children: [
+            {
+                path: 'home',
+                component: HomeComponent
+            },
+            {
+                path: '',
+                redirectTo: 'home',
+                pathMatch: 'full'
+            }
+        ]
     },
     {
         path: '**',

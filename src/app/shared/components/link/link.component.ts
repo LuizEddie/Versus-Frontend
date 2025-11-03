@@ -13,12 +13,13 @@ import { LINK } from '../../../theme/colors';
 export class LinkComponent {
   @Input() link: string = "#";
   @Input() variant: Variant = "primary";
+  @Input() classNames: string = "";
 
   constructor(){
 
   }
 
   getLinkClass(){
-    return `underline ${LINK.default[this.variant]}`;
+    return `${this.classNames} ${LINK.default[this.variant]}`;
   }
 }
