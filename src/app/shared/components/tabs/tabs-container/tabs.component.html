@@ -1,0 +1,23 @@
+<div class="w-full">
+    <div class="flex border-b border-gray-300">
+        @for(tab of tabs.toArray(); track $index){
+            <button 
+                (click)="setActive($index)"
+                class="py-2 px-4 font-medium transition-colors"
+                [ngClass]="{
+                    'text-orange-600 border-b-2 border-orange-600': activeIndex === $index,
+                    'text-gray-600 hover:text-orange-600': activeIndex !== $index,
+                }"
+            >
+                {{ tab.label }}
+        </button>
+        }
+    </div>
+    <div class="p-4 bg-white min-h-[120px]">
+        @for(tab of tabs.toArray(); track $index){
+            @if(activeIndex === $index){
+                <ng-container *ngTemplateOutlet="tab.template"></ng-container>
+            }
+        }
+    </div>
+</div>

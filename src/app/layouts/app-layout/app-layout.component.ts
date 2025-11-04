@@ -5,7 +5,7 @@ import { LinkComponent } from "../../shared/components/link/link.component";
 
 @Component({
   selector: 'app-app-layout',
-  imports: [RouterOutlet, ButtonComponent, LinkComponent],
+  imports: [RouterOutlet, LinkComponent],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.css'
 })
