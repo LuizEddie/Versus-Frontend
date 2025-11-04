@@ -1,47 +1,16 @@
-<div class="w-full p-2">
-    <app-tabs>
-        <app-tab label="Em Andamento" [active]="true">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ações</th>
-                        <th>Nome</th>
-                        <th>Data de Criação</th>
-                        <th>Tipo</th>
-                        <th>Participantes</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </app-tab>
-        <app-tab label="Planejado">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ações</th>
-                        <th>Nome</th>
-                        <th>Data de Criação</th>
-                        <th>Tipo</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </app-tab>
-        <app-tab label="Finalizado">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ações</th>
-                        <th>Nome</th>
-                        <th>Data de Criação</th>
-                        <th>Tipo</th>
-                        <th>Participantes</th>
-                        <th>Vencedor</th>
-                        <th>Data de Finalização</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </app-tab>
-    </app-tabs>
+<div class="w-full flex flex-row justify-center items-center">
+    <div class="w-[75vw]">
+        <app-tabs>
+            <app-tab label="Em Andamento" [active]="true">
+                <app-table [data]="dataEmAndamento" [columns]="columnsEmAndamento"></app-table>
+            </app-tab>
+            <app-tab label="Planejado">
+                <app-table [data]="dataEmAndamento" [columns]="columnsPlanejado"></app-table>
+            </app-tab>
+            <app-tab label="Finalizado">
+                <app-table [data]="dataEmAndamento" [columns]="columnsFinalizado"></app-table>
+            </app-tab>
+        </app-tabs>
+    </div>
+
 </div>

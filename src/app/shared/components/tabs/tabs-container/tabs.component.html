@@ -1,5 +1,5 @@
 <div class="w-full">
-    <div class="flex border-b border-gray-300">
+    <div class="flex border-b border-gray-300 overflow-x-auto">
         @for(tab of tabs.toArray(); track $index){
             <button 
                 (click)="setActive($index)"
