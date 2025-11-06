@@ -12,6 +12,6 @@ export class LoginService {
   constructor(private http: HttpClient) { }
 
   login(credentials: any){
-    return this.http.post(`${this.url}/login`, credentials);
+    return this.http.post(`${this.url}/login`, credentials, {withCredentials: true});
   }
 }

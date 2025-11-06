@@ -6,7 +6,7 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 import { ConfirmNewPasswordComponent } from './pages/auth/confirm-new-password/confirm-new-password.component';
 import { ConfirmRegisterComponent } from './pages/auth/confirm-register/confirm-register.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { HomeComponent } from './pages/home/home.component';
+import { HomeComponent } from './pages/app/home/home.component';
 import { authGuard } from './shared/guards/auth/auth.guard';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 
@@ -55,7 +55,8 @@ export const routes: Routes = [
                 redirectTo: 'home',
                 pathMatch: 'full'
             }
-        ]
+        ],
+        canActivate: [authGuard]
     },
     {
         path: '**',

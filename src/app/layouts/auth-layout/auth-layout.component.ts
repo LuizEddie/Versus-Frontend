@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from '../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -10,4 +11,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AuthLayoutComponent {
 
+  constructor(private authService: AuthService){
+    // this.authService.removeAccessToken();
+  }
 }

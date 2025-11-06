@@ -1,32 +1,42 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, switchMap, tap, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  
+
+  const excludeUrl = [
+    '/Auth/login',
+    '/Auth/refresh',
+    '/Auth/logout'
+  ];
+
+  if(excludeUrl.some(url => req.url.includes(url))){
+    return next(req);
+  }
+
   const token = authService.getAcessToken();
 
   const authRequest = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}`}}) : req;
-
   return next(authRequest).pipe(
     catchError((error: HttpErrorResponse) => {
       if(error.status === 401){
         return authService.refreshToken().pipe(
+          tap(t => console.log('🟢 refreshToken emitiu:', t)),
           switchMap((newToken) => {
             if(newToken){
               const newRequest = req.clone({
-                setHeaders: { Authorization: `Bearer ${newToken.Data}`}
+                setHeaders: { Authorization: `Bearer ${newToken}`}
               });
               return next(newRequest);
             }
             authService.logout();
             return throwError(() => error);
           }),
-          catchError(() => {
+          catchError((err) => {
             authService.logout();
-            return throwError(() => error);
+            return throwError(() => err);
           })
         );
       }

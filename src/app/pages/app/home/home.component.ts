@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { TabsComponent } from "../../shared/components/tabs/tabs-container/tabs.component";
-import { TabComponent } from "../../shared/components/tabs/tab/tab.component";
-import { TableComponent } from "../../shared/components/table/table.component";
+import { TabsComponent } from "../../../shared/components/tabs/tabs-container/tabs.component";
+import { TabComponent } from "../../../shared/components/tabs/tab/tab.component";
+import { TableComponent } from "../../../shared/components/table/table.component";
+import { HomeService } from './_services/home.service';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +21,10 @@ export class HomeComponent {
 
   dataFinalizado = [];
   columnsFinalizado: any[] = [];
+
+  constructor(private homeService: HomeService, private toast: ToastService){
+
+  }
 
   ngOnInit(){
     this.columnsEmAndamento = [
@@ -45,5 +51,18 @@ export class HomeComponent {
       { key: 'vencedor', label: 'Vencedor'},
       { key: 'data_finalizacao', label: 'Data de Finalização'},
     ];
+
+    this.getTournaments();
+  }
+
+  getTournaments(){
+    this.homeService.getTournaments().subscribe({
+      next: (response: any) => {
+        console.log(response);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
   }
 }
