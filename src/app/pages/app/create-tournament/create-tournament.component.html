@@ -1,10 +1,19 @@
 <div class="w-full">
     <h1 class="text-2xl">Criar Torneio</h1>
-    <form>
-        <div class="mb-2">
-            <app-input label="Nome" type="text" placeholder="Digite o nome do torneio"></app-input>
+    <form [formGroup]="formData">
+        <div>
+            <app-input label="Nome" type="text" placeholder="Digite o nome do torneio" [required]="true"></app-input>
         </div>
-        <div formArrayName="players" class="mb-2"></div>
-        <div formGroupName="tournamentSpec"></div>
+        <div formArrayName="players">
+
+        </div>
+        <div formGroupName="tournamentSpec">
+            <app-input label="Pontos por vitória" type="number" placeholder="Digite a quantidade de pontos após vitória" [required]="true"></app-input>
+            <app-input label="Pontos por empate" type="number" placeholder="Digite a quantidade de pontos após empate" [required]="true"></app-input>
+            <app-input label="Pontos por derrota" type="number" placeholder="Digite a quantidade de pontos após derrota" [required]="true"></app-input>
+            <app-input label="Quantidade de Rounds" type="number" placeholder="Digite a quantidade de rounds para definição do primeiro lugar" [required]="true"></app-input>     
+            <app-input label="Quantidade de Grupos" type="number" placeholder="Digite a quantidade de grupos" [required]="true"></app-input>     
+            <app-input label="Duração da Partida" type="time" placeholder="Digite a duração da partida" [required]="true"></app-input>
+        </div>
     </form>
 </div>

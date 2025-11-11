@@ -24,7 +24,8 @@ export class CreateTournamentComponent {
         qtyGroups: ['', [Validators.pattern(/^[0-9]+$/)]],
         winConditionId: ['', [Validators.required]],
         typeId: ['', [Validators.required]],
-        tieBreakerId: ['']
+        tieBreakerId: [''],
+        matchDuration: ['']
       })
     });
   }

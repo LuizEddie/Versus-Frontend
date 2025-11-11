@@ -1,6 +1,6 @@
 import { Component, Input, Optional, Self } from '@angular/core';
 import { NgControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { getValidationMessage } from '../../utils/validation-messages';
+import { getValidationMessage } from '../../../utils/validation-messages';
 
 @Component({
   selector: 'app-input',
