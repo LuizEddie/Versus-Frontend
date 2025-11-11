@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Variant } from '../../models/variants.models';
-import { LINK } from '../../../theme/colors';
+import { Variant } from '../../../models/variants.models';
+import { LINK } from '../../../../theme/colors';
 
 @Component({
   selector: 'app-link',

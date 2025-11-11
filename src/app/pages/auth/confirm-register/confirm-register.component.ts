@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PasswordFormComponent } from "../_components/password-form/password-form.component";
-import { ButtonComponent } from "../../../shared/components/button/button.component";
+import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
 import { FormControl, FormGroup } from '@angular/forms';
 import { ResetPasswordService } from '../_services/reset-password.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { BUTTON } from '../../../theme/colors';
-import { Variant } from '../../models/variants.models';
+import { BUTTON } from '../../../../theme/colors';
+import { Variant } from '../../../models/variants.models';
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { TabsComponent } from "../../../shared/components/tabs/tabs-container/tabs.component";
-import { TabComponent } from "../../../shared/components/tabs/tab/tab.component";
-import { TableComponent } from "../../../shared/components/table/table.component";
+import { TabsComponent } from "../../../shared/components/layout/tabs/tabs-container/tabs.component";
+import { TabComponent } from "../../../shared/components/layout/tabs/tab/tab.component";
+import { TableComponent } from "../../../shared/components/layout/table/table.component";
 import { HomeService } from './_services/home.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 

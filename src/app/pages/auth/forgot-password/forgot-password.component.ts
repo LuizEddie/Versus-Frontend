@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { ButtonComponent } from "../../../shared/components/button/button.component";
-import { InputComponent } from "../../../shared/components/input/input.component";
-import { LinkComponent } from "../../../shared/components/link/link.component";
+import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
+import { InputComponent } from "../../../shared/components/layout/input/input.component";
+import { LinkComponent } from "../../../shared/components/layout/link/link.component";
 import { ForgotPasswordService } from './_services/forgot-password.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';

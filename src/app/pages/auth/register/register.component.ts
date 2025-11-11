@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { InputComponent } from "../../../shared/components/input/input.component";
-import { ButtonComponent } from "../../../shared/components/button/button.component";
+import { InputComponent } from "../../../shared/components/layout/input/input.component";
+import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
 import { Router } from '@angular/router';
-import { LinkComponent } from "../../../shared/components/link/link.component";
+import { LinkComponent } from "../../../shared/components/layout/link/link.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RegisterService } from './_services/register.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
