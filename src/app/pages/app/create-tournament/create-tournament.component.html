@@ -1,6 +1,6 @@
 <div class="w-full">
     <h1 class="text-2xl">Criar Torneio</h1>
-    <form [formGroup]="formData">
+    <form [formGroup]="formData" (ngSubmit)="handleSubmit()">
         <div>
             <app-input label="Nome" type="text" placeholder="Digite o nome do torneio" [required]="true"></app-input>
         </div>
@@ -14,6 +14,10 @@
             <app-input label="Quantidade de Rounds" type="number" placeholder="Digite a quantidade de rounds para definição do primeiro lugar" [required]="true"></app-input>     
             <app-input label="Quantidade de Grupos" type="number" placeholder="Digite a quantidade de grupos" [required]="true"></app-input>     
             <app-input label="Duração da Partida" type="time" placeholder="Digite a duração da partida" [required]="true"></app-input>
+            <app-tie-breaker-select [required]="true" formControlName="tieBreakerId"></app-tie-breaker-select>
+        </div>
+        <div>
+            <app-button type="submit">Salvar</app-button>
         </div>
     </form>
 </div>
