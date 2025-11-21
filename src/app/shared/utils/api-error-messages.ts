@@ -1,4 +1,4 @@
-export function handleErrorMessages(err: any): string | null | undefined {
+export function handleErrorMessages(err: any): string{
     let errorsMessage: string = err?.error?.message || 'Ocorreu um erro inesperado';
 
     if (err?.error?.data) {

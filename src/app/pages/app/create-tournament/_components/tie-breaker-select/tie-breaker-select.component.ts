@@ -1,6 +1,10 @@
 import { Component, Input, Optional, Self } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { getValidationMessage } from '../../../../../shared/utils/validation-messages';
+import { TieBreakerService } from './_services/tie-breaker.service';
+import { TieBreaker } from './_models/tie-breaker.models';
+import { ToastService } from '../../../../../shared/services/toast/toast.service';
+import { handleErrorMessages } from '../../../../../shared/utils/api-error-messages';
 
 @Component({
   selector: 'app-tie-breaker-select',
@@ -16,10 +20,16 @@ export class TieBreakerSelectComponent {
   disabled: boolean = false;
   value: any = '';
 
-  constructor(@Optional() @Self() public ngControl: NgControl){
+  tieBreakers: TieBreaker[] = [];
+
+  constructor(@Optional() @Self() public ngControl: NgControl, private tieBreakerService: TieBreakerService, private toastService: ToastService){
     if(this.ngControl){
       this.ngControl.valueAccessor = this;
     }
+  }
+
+  ngOnInit(){
+    this.getTieBreakers();
   }
 
   onChange = (value: any) => {};
@@ -45,6 +55,13 @@ export class TieBreakerSelectComponent {
     const target = event.target as HTMLSelectElement;
     this.value = target.value;
     this.onChange(this.value);
+  }
+
+  getTieBreakers(){
+    this.tieBreakerService.getTieBreakers().subscribe({
+      next: (response: any) => this.tieBreakers = response.data,
+      error: (err) => this.toastService.warning(handleErrorMessages(err))
+    })
   }
 
   get control(){

@@ -14,8 +14,10 @@
         focus:outline-none focus:ring transition-all
         disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"    
     >
-        <option value="">Selecione um valor</option>
-        <option value="teste1">Teste 1</option>
+        <option value="">Selecione um valor...</option>
+        @for(t of tieBreakers; track t.id){
+            <option [value]="t.id">{{ t.name }}</option>
+        }
     </select>
     <div class="text-sm text-yellow-600 mt-1">
         {{ errorMessage }}
