@@ -1,20 +1,46 @@
 <div class="w-full">
-    <h1 class="text-2xl">Criar Torneio</h1>
+    <h1 class="text-3xl">Criar Torneio</h1>
     <form [formGroup]="formData" (ngSubmit)="handleSubmit()">
         <div>
-            <app-input label="Nome" type="text" placeholder="Digite o nome do torneio" [required]="true"></app-input>
-        </div>
-        <div formArrayName="players">
-
+            <app-input label="Nome" type="text" formControlName="name" placeholder="Digite o nome do torneio" [required]="true"></app-input>
         </div>
         <div formGroupName="tournamentSpec">
-            <app-input label="Pontos por vitória" type="number" placeholder="Digite a quantidade de pontos após vitória" [required]="true"></app-input>
-            <app-input label="Pontos por empate" type="number" placeholder="Digite a quantidade de pontos após empate" [required]="true"></app-input>
-            <app-input label="Pontos por derrota" type="number" placeholder="Digite a quantidade de pontos após derrota" [required]="true"></app-input>
-            <app-input label="Quantidade de Rounds" type="number" placeholder="Digite a quantidade de rounds para definição do primeiro lugar" [required]="true"></app-input>     
-            <app-input label="Quantidade de Grupos" type="number" placeholder="Digite a quantidade de grupos" [required]="true"></app-input>     
-            <app-input label="Duração da Partida" type="time" placeholder="Digite a duração da partida" [required]="true"></app-input>
+            <app-type-select [required]="true" formControlName="typeId"></app-type-select>
+            <app-win-condition-select [required]="true" formControlName="winConditionId"></app-win-condition-select>
+            @if(typeId === "2"){
             <app-tie-breaker-select [required]="true" formControlName="tieBreakerId"></app-tie-breaker-select>
+            <app-input label="Pontos por vitória" type="number" placeholder="Digite a quantidade de pontos após vitória"
+                [required]="true"
+                formControlName="pointsPerWin"></app-input>
+            <app-input label="Pontos por empate" type="number" placeholder="Digite a quantidade de pontos após empate"
+                [required]="true"
+                formControlName="pointsPerDraw"></app-input>
+            <app-input label="Pontos por derrota" type="number" placeholder="Digite a quantidade de pontos após derrota"
+                [required]="true"
+                formControlName="pointsPerLose"></app-input>
+            <app-input label="Quantidade de Rounds" type="number"
+                placeholder="Digite a quantidade de rounds para definição do primeiro lugar"
+                [required]="true"
+                formControlName="qtyRounds"></app-input>
+            <app-input label="Quantidade de Grupos" type="number" placeholder="Digite a quantidade de grupos"
+                [required]="true"
+                formControlName="qtyGroups"></app-input>
+            <app-input label="Duração da Partida" type="time" placeholder="Digite a duração da partida"
+                [required]="true"
+                formControlName="matchDuration"></app-input>
+            }
+        </div>
+        <div formArrayName="players">
+            <h4 class="text-2xl">Jogadores</h4>
+            <app-button type="button" variant="success" (click)="addPlayer()">+</app-button>
+
+            @for(player of playersArray.controls; track player){
+            <div [formGroupName]="$index">
+                <app-input formControlName="name" label="Nome do Jogador" [required]="true"
+                    placeholder="Digite o nome do jogador"></app-input>
+                <app-button type="button" variant="danger" (click)="removePlayer($index)">-</app-button>
+            </div>
+            }
         </div>
         <div>
             <app-button type="submit">Salvar</app-button>
