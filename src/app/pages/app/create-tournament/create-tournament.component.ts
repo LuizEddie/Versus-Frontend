@@ -6,18 +6,22 @@ import { ButtonComponent } from "../../../shared/components/layout/button/button
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TypeSelectComponent } from "./_components/type-select/type-select.component";
 import { WinConditionSelectComponent } from "./_components/win-condition-select/win-condition-select.component";
+import { CreateTournamentService } from './_services/create-tournament.service';
+import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
+import { InputGroupComponent } from "../../../shared/components/layout/input-group/input-group.component";
 
 @Component({
   selector: 'app-create-tournament',
-  imports: [InputComponent, ReactiveFormsModule, TieBreakerSelectComponent, ButtonComponent, TypeSelectComponent, WinConditionSelectComponent],
+  imports: [InputComponent, ReactiveFormsModule, TieBreakerSelectComponent, ButtonComponent, TypeSelectComponent, WinConditionSelectComponent, InputGroupComponent],
   templateUrl: './create-tournament.component.html',
   styleUrl: './create-tournament.component.css',
   standalone: true
 })
 export class CreateTournamentComponent {
   formData!: FormGroup;
+  disableForm: boolean = false;
 
-  constructor(private fb: FormBuilder, private toast: ToastService) {
+  constructor(private fb: FormBuilder, private toast: ToastService, private createTournamentService: CreateTournamentService) {
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       players: this.fb.array([]),
@@ -91,11 +95,44 @@ export class CreateTournamentComponent {
 
   handleSubmit() {
     if (!this.formData.valid) {
-      console.log(this.formData);
       this.toast.warning("Por favor, preencha os campos corretamente!");
       return;
     }
+    this.disableForm = true;
 
-    console.log('opa');
+    const toastId = this.toast.show({ message: "Criando torneio, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+
+    const tournamentSpec = this.formData.value.tournamentSpec;
+
+    const payload = {
+      ...this.formData.value,
+      tournamentSpec: {
+        ...tournamentSpec,
+        winConditionId: Number(tournamentSpec.winConditionId),
+        typeId: Number(tournamentSpec.typeId),
+        tieBreakerId: tournamentSpec.tieBreakerId ? Number(tournamentSpec.tieBreakerId) : null,
+        pointsPerWin: tournamentSpec.pointsPerWin === '' ? null : Number(tournamentSpec.pointsPerWin),
+        pointsPerDraw: tournamentSpec.pointsPerDraw === '' ? null : Number(tournamentSpec.pointsPerDraw),
+        pointsPerLose: tournamentSpec.pointsPerLose === '' ? null : Number(tournamentSpec.pointsPerLose),
+        qtyRounds: tournamentSpec.qtyRounds === '' ? null : Number(tournamentSpec.qtyRounds),
+        qtyGroups: tournamentSpec.qtyGroups === '' ? null : Number(tournamentSpec.qtyGroups),
+        matchDuration: tournamentSpec.matchDuration || null
+      }
+    }
+
+    this.createTournamentService.createTournament(payload).subscribe({
+      next: (response: any) => {
+        this.formData.reset();
+        this.playersArray.clear();
+        this.addPlayer();
+        this.addPlayer();
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false })
+        this.disableForm = false;
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
+        this.disableForm = false;
+      }
+    });
   }
 }

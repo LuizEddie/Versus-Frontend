@@ -1,5 +1,5 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { NgControl } from '@angular/forms';
+import { FormsModule, NgControl } from '@angular/forms';
 import { getValidationMessage } from '../../../../../shared/utils/validation-messages';
 import { TieBreakerService } from './_services/tie-breaker.service';
 import { TieBreaker } from './_models/tie-breaker.models';
