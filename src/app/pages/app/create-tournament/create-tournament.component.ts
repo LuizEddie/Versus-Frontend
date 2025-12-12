@@ -9,10 +9,12 @@ import { WinConditionSelectComponent } from "./_components/win-condition-select/
 import { CreateTournamentService } from './_services/create-tournament.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { InputGroupComponent } from "../../../shared/components/layout/input-group/input-group.component";
+import { RowComponent } from "../../../shared/components/layout/row/row.component";
+import { ColComponent } from "../../../shared/components/layout/col/col.component";
 
 @Component({
   selector: 'app-create-tournament',
-  imports: [InputComponent, ReactiveFormsModule, TieBreakerSelectComponent, ButtonComponent, TypeSelectComponent, WinConditionSelectComponent, InputGroupComponent],
+  imports: [InputComponent, ReactiveFormsModule, TieBreakerSelectComponent, ButtonComponent, TypeSelectComponent, WinConditionSelectComponent, RowComponent, ColComponent],
   templateUrl: './create-tournament.component.html',
   styleUrl: './create-tournament.component.css',
   standalone: true
