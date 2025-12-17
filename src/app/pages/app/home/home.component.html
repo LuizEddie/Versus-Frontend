@@ -5,11 +5,26 @@
                 <app-table [data]="dataEmAndamento" [columns]="columnsEmAndamento"></app-table>
             </app-tab>
             <app-tab label="Planejado">
-                <app-table [data]="dataEmAndamento" [columns]="columnsPlanejado"></app-table>
+                <app-table [data]="dataPlanejado" [columns]="columnsPlanejado"></app-table>
             </app-tab>
             <app-tab label="Finalizado">
-                <app-table [data]="dataEmAndamento" [columns]="columnsFinalizado"></app-table>
+                <app-table [data]="dataFinalizado" [columns]="columnsFinalizado"></app-table>
             </app-tab>
         </app-tabs>
+
+        <ng-template #actionEmAndamento let-rowData>
+            Dropdown1
+        </ng-template>
+
+        <ng-template #actionPlanejado let-rowData>
+            <app-dropdown>
+                <app-dropdown-item label="Editar" (click)="onClick(rowData.nome)"></app-dropdown-item>
+                <app-dropdown-item label="Visualizar"></app-dropdown-item>
+            </app-dropdown>
+        </ng-template>
+
+        <ng-template #actionFinalizado let-rowData>
+            Dropdown3
+        </ng-template>
     </div>
 </div>

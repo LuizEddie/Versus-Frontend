@@ -13,7 +13,7 @@
         </button>
         }
     </div>
-    <div class="p-4 bg-white min-h-[120px]">
+    <div class="p-4 bg-white min-h-30">
         @for(tab of tabs.toArray(); track $index){
             @if(activeIndex === $index){
                 <ng-container *ngTemplateOutlet="tab.template"></ng-container>

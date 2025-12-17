@@ -1,18 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { TabsComponent } from "../../../shared/components/layout/tabs/tabs-container/tabs.component";
 import { TabComponent } from "../../../shared/components/layout/tabs/tab/tab.component";
 import { TableComponent } from "../../../shared/components/layout/table/table.component";
 import { HomeService } from './_services/home.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
+import { DropdownComponent } from "../../../shared/components/layout/dropdown/dropdown/dropdown.component";
+import { DropdownItemComponent } from "../../../shared/components/layout/dropdown/dropdown-item/dropdown-item.component";
 
 @Component({
   selector: 'app-home',
-  imports: [TabsComponent, TabComponent, TableComponent],
+  imports: [TabsComponent, TabComponent, TableComponent, DropdownComponent, DropdownItemComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   standalone: true
 })
 export class HomeComponent {
+  @ViewChild('actionPlanejado', { static: true}) actionPlanejado!: TemplateRef<any>;
+  @ViewChild('actionEmAndamento', { static: true}) actionEmAndamento!: TemplateRef<any>;
+  @ViewChild('actionFinalizado', { static: true}) actionFinalizado!: TemplateRef<any>;
+
+
   dataEmAndamento = [];
   columnsEmAndamento: any[] = [];
 
@@ -28,7 +36,7 @@ export class HomeComponent {
 
   ngOnInit(){
     this.columnsEmAndamento = [
-      { key: 'actions', label: 'Ações'},
+      { key: 'actions', label: 'Ações', template: this.actionEmAndamento},
       { key: 'nome', label: 'Nome'},
       { key: 'data_criacao', label: 'Data de Criação'},
       { key: 'tipo', label: 'Tipo'},
@@ -36,14 +44,15 @@ export class HomeComponent {
     ];
 
     this.columnsPlanejado = [
-      { key: 'actions', label: 'Ações'},
+      { key: 'actions', label: 'Ações', template: this.actionPlanejado},
       { key: 'nome', label: 'Nome'},
       { key: 'data_criacao', label: 'Data de Criação'},
       { key: 'tipo', label: 'Tipo'},
+      { key: 'participantes', label: 'Participantes'},
     ];
 
     this.columnsFinalizado = [
-      { key: 'actions', label: 'Ações'},
+      { key: 'actions', label: 'Ações', template: this.actionFinalizado},
       { key: 'nome', label: 'Nome'},
       { key: 'data_criacao', label: 'Data de Criação'},
       { key: 'tipo', label: 'Tipo'},
@@ -55,13 +64,31 @@ export class HomeComponent {
     this.getTournaments();
   }
 
+  onClick(opa: string){
+    alert(opa);
+  }
+
   getTournaments(){
+    const toastId = this.toast.show({ message: "Carregando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+    
     this.homeService.getTournaments().subscribe({
       next: (response: any) => {
-        console.log(response);
+        let data = response.data.map((item: any) => ({
+          nome: item.name || '',
+          data_criacao: item.createdAt ? new Date(item.createdAt).toLocaleDateString('pt-BR') : '',
+          status: item.tournamentStatus.name || '',
+          tipo: item.tournamentSpecs.type.name || '',
+          participantes: item.playerDetails.length || 0,
+          vencedor: '',
+          data_finalizacao: item.finishedAt ? new Date(item.finishedAt).toLocaleDateString('pt-BR') : ''
+        })) || [];
+        this.dataEmAndamento = data.filter((item: any) => item.status === "Em Andamento");
+        this.dataPlanejado = data.filter((item: any) => item.status === "Planejado");
+        this.dataFinalizado = data.filter((item: any) => item.status === "Finalizado");
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false })
       },
       error: (err: any) => {
-        console.log(err);
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
       }
     });
   }

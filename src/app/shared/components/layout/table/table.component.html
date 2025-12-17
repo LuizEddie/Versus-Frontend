@@ -13,7 +13,7 @@
             @for(row of data; track $index){
             <tr class="hover:bg-gray-50">
                 @for(column of columns; track column.key){
-                <td class="px-4 py-2 text-sm text-gray-700">
+                <td class="px-4 py-2 text-sm text-gray-700 text-center">
                     @if(column.template){
                     <ng-container [ngTemplateOutlet]="column.template"
                         [ngTemplateOutletContext]="{ $implicit: row}"></ng-container>

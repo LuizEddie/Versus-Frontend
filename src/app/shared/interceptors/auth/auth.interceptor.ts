@@ -23,7 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if(error.status === 401){
         return authService.refreshToken().pipe(
-          tap(t => console.log('🟢 refreshToken emitiu:', t)),
+          // tap(t => console.log('🟢 refreshToken emitiu:', t)),
           switchMap((newToken) => {
             if(newToken){
               const newRequest = req.clone({

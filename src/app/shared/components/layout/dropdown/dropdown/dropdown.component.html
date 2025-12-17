@@ -1,0 +1,13 @@
+<div class="relative inline-block">
+    <button
+        [type]="type" [class]="getButtonClass()" [disabled]="disabled"
+        type="button" 
+        (click)="toggle()">
+        {{ label }} <i [class]="!isOpen ? 'pi pi-angle-down' : 'pi pi-angle-up'"></i>
+    </button>
+    @if(isOpen){
+    <div class="absolute mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <ng-content></ng-content>
+    </div>
+    }
+</div>
