@@ -7,11 +7,15 @@ import { HttpClient } from '@angular/common/http';
 })
 export class HomeService {
 
-  private readonly url = `${environment.url}/Tournaments`
+  private readonly url = `${environment.url}/Tournaments`;
 
   constructor(private http: HttpClient) { }
 
   getTournaments(){
     return this.http.get(`${this.url}`);   
+  }
+
+  cancelTournamentById(id: number){
+    return this.http.delete(`${this.url}/${id}`);
   }
 }

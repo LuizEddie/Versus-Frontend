@@ -1,5 +1,5 @@
-<div class="flex flex-wrap">
-    <div class="w-full">
+<app-row>
+    <app-col>
         <app-tabs>
             <app-tab label="Em Andamento" [active]="true">
                 <app-table [data]="dataEmAndamento" [columns]="columnsEmAndamento"></app-table>
@@ -13,18 +13,29 @@
         </app-tabs>
 
         <ng-template #actionEmAndamento let-rowData>
-            Dropdown1
+            <app-dropdown>
+                <app-dropdown-item label="Continuar"
+                    [routerLink]="'/tournament-data/' + rowData.id"></app-dropdown-item>
+                <app-dropdown-item label="Cancelar" [swal]="cancelSwal"
+                    (click)="selectedData = rowData"></app-dropdown-item>
+            </app-dropdown>
         </ng-template>
 
         <ng-template #actionPlanejado let-rowData>
             <app-dropdown>
-                <app-dropdown-item label="Editar" (click)="onClick(rowData.nome)"></app-dropdown-item>
-                <app-dropdown-item label="Visualizar"></app-dropdown-item>
+                <app-dropdown-item label="Iniciar" [routerLink]="'/tournament-data/' + rowData.id"></app-dropdown-item>
+                <app-dropdown-item label="Cancelar" [swal]="cancelSwal"
+                    (click)="selectedData = rowData"></app-dropdown-item>
             </app-dropdown>
         </ng-template>
 
         <ng-template #actionFinalizado let-rowData>
-            Dropdown3
+            <app-dropdown>
+                <app-dropdown-item label="Visualizar"></app-dropdown-item>
+            </app-dropdown>
         </ng-template>
-    </div>
-</div>
+        <swal #cancelSwal title="Cancelar Torneio?" text="A ação não pode ser desfeita" [showCancelButton]="true"
+            cancelButtonText="Não" cancelButtonColor="green" [showConfirmButton]="true" confirmButtonText="Sim"
+            confirmButtonColor="red" [focusCancel]="true" (confirm)="cancelTournament(selectedData.id)"></swal>
+    </app-col>
+</app-row>

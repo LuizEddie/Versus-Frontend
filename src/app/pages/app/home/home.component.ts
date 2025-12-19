@@ -7,10 +7,14 @@ import { ToastService } from '../../../shared/services/toast/toast.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { DropdownComponent } from "../../../shared/components/layout/dropdown/dropdown/dropdown.component";
 import { DropdownItemComponent } from "../../../shared/components/layout/dropdown/dropdown-item/dropdown-item.component";
+import { SwalComponent, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
+import { RouterLink } from "@angular/router";
+import { ColComponent } from "../../../shared/components/layout/col/col.component";
+import { RowComponent } from '../../../shared/components/layout/row/row.component';
 
 @Component({
   selector: 'app-home',
-  imports: [TabsComponent, TabComponent, TableComponent, DropdownComponent, DropdownItemComponent],
+  imports: [TabsComponent, TabComponent, TableComponent, DropdownComponent, DropdownItemComponent, SwalComponent, SwalDirective, RouterLink, ColComponent, RowComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   standalone: true
@@ -20,6 +24,7 @@ export class HomeComponent {
   @ViewChild('actionEmAndamento', { static: true}) actionEmAndamento!: TemplateRef<any>;
   @ViewChild('actionFinalizado', { static: true}) actionFinalizado!: TemplateRef<any>;
 
+  selectedData: any = null;
 
   dataEmAndamento = [];
   columnsEmAndamento: any[] = [];
@@ -64,8 +69,18 @@ export class HomeComponent {
     this.getTournaments();
   }
 
-  onClick(opa: string){
-    alert(opa);
+  cancelTournament(id: number){
+    const toastId = this.toast.show({ message: "Removendo dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+    
+    this.homeService.cancelTournamentById(id).subscribe({
+      next: (response: any) => {
+        this.getTournaments();
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+      }
+    });
   }
 
   getTournaments(){
@@ -74,6 +89,7 @@ export class HomeComponent {
     this.homeService.getTournaments().subscribe({
       next: (response: any) => {
         let data = response.data.map((item: any) => ({
+          id: item.id || '',
           nome: item.name || '',
           data_criacao: item.createdAt ? new Date(item.createdAt).toLocaleDateString('pt-BR') : '',
           status: item.tournamentStatus.name || '',

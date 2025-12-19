@@ -23,4 +23,8 @@ export class DropdownComponent {
   toggle() {
     this.isOpen = !this.isOpen;
   }
+
+  close(){
+    this.isOpen = false;
+  }
 }
