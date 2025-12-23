@@ -71,9 +71,11 @@
                                 <app-input formControlName="name" label="Nome do Jogador" [required]="true"
                                     placeholder="Digite o nome do jogador"></app-input>
                             </div>
+                            @if(playersArray.length > 2){
                             <div class="w-2/12 mt-6 ml-1 mr-1">
                                 <app-button type="button" variant="danger" (click)="removePlayer($index)">-</app-button>
                             </div>
+                            }
                         </div>
                     </app-col>
                     }

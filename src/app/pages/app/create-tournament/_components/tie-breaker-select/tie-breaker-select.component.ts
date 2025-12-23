@@ -1,5 +1,5 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { FormsModule, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { getValidationMessage } from '../../../../../shared/utils/validation-messages';
 import { TieBreakerService } from './_services/tie-breaker.service';
 import { TieBreaker } from './_models/tie-breaker.models';
@@ -13,7 +13,7 @@ import { handleErrorMessages } from '../../../../../shared/utils/api-error-messa
   styleUrl: './tie-breaker-select.component.css',
   standalone: true
 })
-export class TieBreakerSelectComponent {
+export class TieBreakerSelectComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
   @Input() name: string = 'tieBreakerId';
 

@@ -7,16 +7,15 @@
         [name]="name" 
         [id]="name"
         [disabled]="disabled"
-        [value]="value"
         (change)="handleSelect($event)"
         (blur)="onTouched()"
-        class="border border-gray-300 bg-white rounded-[0.5rem] p-1
+        class="border border-gray-300 bg-white rounded-lg p-1
         focus:outline-none focus:ring transition-all
         disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"    
     >
         <option value="">Selecione um valor...</option>
         @for(t of tieBreakers; track t.id){
-            <option [value]="t.id">{{ t.name }}</option>
+            <option [value]="t.id" [selected]="t.id === value">{{ t.name }}</option>
         }
     </select>
     <div class="text-sm text-yellow-600 mt-1">

@@ -1,5 +1,5 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { NgControl } from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Type } from './_models/type.models';
 import { TypeService } from './_services/type.service';
 import { ToastService } from '../../../../../shared/services/toast/toast.service';
@@ -13,7 +13,7 @@ import { getValidationMessage } from '../../../../../shared/utils/validation-mes
   styleUrl: './type-select.component.css',
   standalone: true
 })
-export class TypeSelectComponent {
+export class TypeSelectComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
   @Input() name: string = "typeId";
 

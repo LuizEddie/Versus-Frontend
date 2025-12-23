@@ -1,6 +1,6 @@
 import { Component, Input, Optional, Self } from '@angular/core';
 import { WinCondition } from './_models/win-condition.models';
-import { NgControl } from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { WinConditionService } from './_services/win-condition.service';
 import { ToastService } from '../../../../../shared/services/toast/toast.service';
 import { handleErrorMessages } from '../../../../../shared/utils/api-error-messages';
@@ -12,7 +12,7 @@ import { getValidationMessage } from '../../../../../shared/utils/validation-mes
   templateUrl: './win-condition-select.component.html',
   styleUrl: './win-condition-select.component.css'
 })
-export class WinConditionSelectComponent {
+export class WinConditionSelectComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
   @Input() name: string = "typeId";
 
