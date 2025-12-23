@@ -70,7 +70,7 @@ export class TournamentDataComponent {
     });
   }
 
- get typeId() {
+  get typeId() {
     return this.formData.get('tournamentSpec.typeId')?.value;
   }
 
@@ -142,6 +142,16 @@ export class TournamentDataComponent {
         this.formData.get('name')?.setValue(this.data.name);
         this.formData.get('tournamentSpec.winConditionId')?.setValue(this.data.tournamentSpecs.winCondition.id);
         this.formData.get('tournamentSpec.typeId')?.setValue(this.data.tournamentSpecs.type.id);
+        if (this.data.tournamentSpecs.type.id === 2) {
+          this.formData.get('tournamentSpec.tieBreakerId')?.setValue(this.data.tournamentSpecs.tieBreaker.id);
+          this.formData.get('tournamentSpec.pointsPerWin')?.setValue(this.data.tournamentSpecs.pointsPerWin);
+          this.formData.get('tournamentSpec.pointsPerDraw')?.setValue(this.data.tournamentSpecs.pointsPerDraw);
+          this.formData.get('tournamentSpec.pointsPerLose')?.setValue(this.data.tournamentSpecs.pointsPerLose);
+          this.formData.get('tournamentSpec.qtyRounds')?.setValue(this.data.tournamentSpecs.qtyRounds);
+          this.formData.get('tournamentSpec.qtyGroups')?.setValue(this.data.tournamentSpecs.qtyGroups);
+          this.formData.get('tournamentSpec.matchDuration')?.setValue(this.data.tournamentSpecs.matchDuration);
+        }
+
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false })
       },
       error: (err: any) => {
