@@ -30,6 +30,10 @@ export class TournamentDataService {
   }
 
   updatePlayer(id: number | null, params: any){
-    return this.http.patch(`${this.playerUrl}/${id}`, params);
+    return this.http.put(`${this.playerUrl}/${id}`, params);
+  }
+
+  addPlayers(tournamentId: number | null, params: any){
+    return this.http.post(`${this.playerUrl}/${tournamentId}`, params);
   }
 }

@@ -3,7 +3,7 @@
         @for(tab of tabs.toArray(); track $index){
             <button 
                 (click)="setActive($index)"
-                class="py-2 px-4 font-medium transition-colors"
+                class="py-2 px-4 font-medium transition-colors cursor-pointer"
                 [ngClass]="{
                     'text-orange-600 border-b-2 border-orange-600': activeIndex === $index,
                     'text-gray-600 hover:text-orange-600': activeIndex !== $index,
@@ -13,7 +13,7 @@
         </button>
         }
     </div>
-    <div class="p-4 bg-white min-h-30">
+    <div class="p-4 bg-white min-h-30 rounded-b-lg">
         @for(tab of tabs.toArray(); track $index){
             @if(activeIndex === $index){
                 <ng-container *ngTemplateOutlet="tab.template"></ng-container>

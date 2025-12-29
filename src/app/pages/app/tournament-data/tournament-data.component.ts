@@ -10,9 +10,11 @@ import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
 import { InputComponent } from "../../../shared/components/layout/input/input.component";
-import { WinConditionSelectComponent } from "../create-tournament/_components/win-condition-select/win-condition-select.component";
-import { TypeSelectComponent } from "../create-tournament/_components/type-select/type-select.component";
-import { TieBreakerSelectComponent } from "../create-tournament/_components/tie-breaker-select/tie-breaker-select.component";
+import { concatMap, from, of, toArray } from 'rxjs';
+import { WinConditionSelectComponent } from '../_components/win-condition-select/win-condition-select.component';
+import { TypeSelectComponent } from '../_components/type-select/type-select.component';
+import { TieBreakerSelectComponent } from '../_components/tie-breaker-select/tie-breaker-select.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tournament-data',
@@ -38,7 +40,7 @@ export class TournamentDataComponent {
         qtyRounds: ['', [Validators.pattern(/^[0-9]+$/)]],
         qtyGroups: ['', [Validators.pattern(/^[0-9]+$/)]],
         winConditionId: ['', [Validators.required]],
-        typeId: [{value: '', disabled: true}, [Validators.required]],
+        typeId: [{ value: '', disabled: true }],
         tieBreakerId: [''],
         matchDuration: ['']
       })
@@ -50,13 +52,14 @@ export class TournamentDataComponent {
     this.formData.get('tournamentSpec.typeId')?.valueChanges.subscribe(type => {
       const spec = this.formData.get('tournamentSpec') as FormGroup;
 
-      if (type === "2") {
+      if (type === 2) {
         spec.get("pointsPerWin")?.addValidators(Validators.required);
         spec.get("pointsPerDraw")?.addValidators(Validators.required);
         spec.get("pointsPerLose")?.addValidators(Validators.required);
         spec.get("qtyRounds")?.addValidators(Validators.required);
         spec.get("qtyGroups")?.addValidators(Validators.required);
         spec.get("matchDuration")?.addValidators(Validators.required);
+        spec.get('tieBreakerId')?.addValidators(Validators.required);
       } else {
         spec.get("pointsPerWin")?.clearValidators();
         spec.get("pointsPerDraw")?.clearValidators();
@@ -64,6 +67,7 @@ export class TournamentDataComponent {
         spec.get("qtyRounds")?.clearValidators();
         spec.get("qtyGroups")?.clearValidators();
         spec.get("matchDuration")?.clearValidators();
+        spec.get('tieBreakerId')?.clearValidators();
       }
 
       spec.updateValueAndValidity();
@@ -78,10 +82,16 @@ export class TournamentDataComponent {
     return this.formData.get('players') as FormArray;
   }
 
+  get removedPlayersCount(): number {
+    return this.playersArray.controls.filter(
+      item => item.value?._state === 'removed'
+    ).length
+  }
+
   createPlayer(state: 'original' | 'new' | 'removed' = 'original', players?: any): FormGroup {
     return this.fb.group({
       id: [players?.id || null],
-      name: [{value: players?.name || '', disabled: this.data.tournamentStatus.id !== 1}, Validators.required],
+      name: [{ value: players?.name || '', disabled: this.data.tournamentStatus.id !== 1 }, Validators.required],
       _state: [state] //original | new | removed
     })
   }
@@ -91,10 +101,9 @@ export class TournamentDataComponent {
   }
 
   removePlayer(idx: number) {
-
     const player = this.playersArray.at(idx) as FormGroup;
 
-    if (this.playersArray.length === 2) {
+    if ((this.playersArray.length - this.removedPlayersCount) === 2) {
       this.toast.warning("Devem haver no mínimo dois jogadores!");
       return;
     }
@@ -106,6 +115,14 @@ export class TournamentDataComponent {
     }
   }
 
+  updatePlayerName(idx: number) {
+    const player = this.playersArray.at(idx) as FormGroup;
+
+    if (player.value.id) {
+      player.patchValue({ _state: 'updated' });
+    }
+  }
+
   handleSubmit() {
     if (!this.formData.valid) {
       this.toast.warning("Por favor, preencha os campos corretamente!");
@@ -113,25 +130,87 @@ export class TournamentDataComponent {
     }
     this.disableForm = true;
 
-    // const toastId = this.toast.show({ message: "Criando torneio, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+    const toastId = this.toast.show({ message: "Iniciando torneio, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
 
     const tournamentSpec = this.formData.value.tournamentSpec;
+    const tournament = this.formData.value;
+    const players = this.formData.value.players || [];
 
-    const payload = {
-      ...this.formData.value,
-      tournamentSpec: {
-        ...tournamentSpec,
-        winConditionId: Number(tournamentSpec.winConditionId),
-        typeId: Number(tournamentSpec.typeId),
-        tieBreakerId: tournamentSpec.tieBreakerId ? Number(tournamentSpec.tieBreakerId) : null,
-        pointsPerWin: tournamentSpec.pointsPerWin === '' ? null : Number(tournamentSpec.pointsPerWin),
-        pointsPerDraw: tournamentSpec.pointsPerDraw === '' ? null : Number(tournamentSpec.pointsPerDraw),
-        pointsPerLose: tournamentSpec.pointsPerLose === '' ? null : Number(tournamentSpec.pointsPerLose),
-        qtyRounds: tournamentSpec.qtyRounds === '' ? null : Number(tournamentSpec.qtyRounds),
-        qtyGroups: tournamentSpec.qtyGroups === '' ? null : Number(tournamentSpec.qtyGroups),
-        matchDuration: tournamentSpec.matchDuration || null
-      }
+    const newPlayers = players.filter((item: any) => item._state === 'new').map((item: any) => ({ name: item.name }));
+    const removedPlayers = players.filter((item: any) => item._state === 'removed').map((item: any) => ({ id: item.id, name: item.name }));
+    const updatedPlayers = players.filter((item: any) => item._state === 'updated').map((item: any) => ({ id: item.id, name: item.name }));
+
+    const tournamentPayload = {
+      name: tournament.name,
+      statusId: 3
     }
+
+    const tournamentSpecsPayload = {
+      ...tournamentSpec,
+      winConditionId: Number(tournamentSpec.winConditionId),
+      typeId: Number(tournamentSpec.typeId),
+      tieBreakerId: tournamentSpec.tieBreakerId ? Number(tournamentSpec.tieBreakerId) : null,
+      pointsPerWin: tournamentSpec.pointsPerWin === '' ? null : Number(tournamentSpec.pointsPerWin),
+      pointsPerDraw: tournamentSpec.pointsPerDraw === '' ? null : Number(tournamentSpec.pointsPerDraw),
+      pointsPerLose: tournamentSpec.pointsPerLose === '' ? null : Number(tournamentSpec.pointsPerLose),
+      qtyRounds: tournamentSpec.qtyRounds === '' ? null : Number(tournamentSpec.qtyRounds),
+      qtyGroups: tournamentSpec.qtyGroups === '' ? null : Number(tournamentSpec.qtyGroups),
+      matchDuration: tournamentSpec.matchDuration || null
+    }
+
+    this.tournamentDataServices.updateTournament(this.data.id, tournamentPayload).pipe(
+      
+      concatMap(() => this.tournamentDataServices.updateTournamentSpec(this.data.tournamentSpecs.id, tournamentSpecsPayload)),
+      
+      concatMap(() => 
+        updatedPlayers.length 
+        ? from(updatedPlayers).pipe(
+          concatMap((player: any) => 
+            this.tournamentDataServices.updatePlayer(player.id, player)
+          ), toArray()
+        ) : of(null)
+      ),
+
+      concatMap(() => 
+        removedPlayers.length 
+        ? from(removedPlayers).pipe(
+          concatMap((player: any) => 
+            this.tournamentDataServices.deletePlayer(player.id)
+          ), toArray()
+        ) : of(null)
+      ),
+
+      concatMap(() => newPlayers.length ? this.tournamentDataServices.addPlayers(this.data.id, newPlayers) : of(null))
+
+    ).subscribe({
+      next: (_: any) => {
+        this.toast.finishToast(toastId, { message: `Torneio iniciado com sucesso!`, type: 'success', duration: 500, closeable: true, persistent: false })
+        this.disableForm = false;
+        let swal = Swal.fire({
+          title: "Torneio iniciado com sucesso. O que deseja fazer?",
+          showCancelButton: true,
+          cancelButtonColor: "red",
+          cancelButtonText: "Voltar para o início",
+          showConfirmButton: true,
+          confirmButtonColor: "green",
+          confirmButtonText: "Ir para o torneio",
+        }).then((result) => {
+          if(result.isConfirmed){
+            this.getTournamentById();
+            return;
+          }
+
+          this.router.navigate(['/home']);
+        });
+
+         //Só para teste
+        //Aqui vai o swal para definir o que o usuario deseja fazer: prosseguir com o torneio ou voltar para a home
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+        this.disableForm = false;
+      }
+    });
   }
 
   getTournamentById() {
@@ -175,12 +254,16 @@ export class TournamentDataComponent {
     });
   }
 
-  applyStatusRules(){
+  applyStatusRules() {
     const spec = this.formData.get('tournamentSpec') as FormGroup;
     const isEditable = this.data.tournamentStatus?.id === 1;
 
+    const name = this.formData.get('name');
+
+    isEditable ? name?.enable() : name?.disable();
+
     Object.keys(spec.controls).forEach(key => {
-      if(key === 'typeId') return;
+      if (key === 'typeId') return;
 
       const control = spec.get(key);
 

@@ -1,35 +1,35 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Type } from './_models/type.models';
-import { TypeService } from './_services/type.service';
-import { ToastService } from '../../../../../shared/services/toast/toast.service';
-import { handleErrorMessages } from '../../../../../shared/utils/api-error-messages';
-import { getValidationMessage } from '../../../../../shared/utils/validation-messages';
+import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { TieBreakerService } from './_services/tie-breaker.service';
+import { TieBreaker } from './_models/tie-breaker.models';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { handleErrorMessages } from '../../../../shared/utils/api-error-messages';
+import { getValidationMessage } from '../../../../shared/utils/validation-messages';
 
 @Component({
-  selector: 'app-type-select',
+  selector: 'app-tie-breaker-select',
   imports: [],
-  templateUrl: './type-select.component.html',
-  styleUrl: './type-select.component.css',
+  templateUrl: './tie-breaker-select.component.html',
+  styleUrl: './tie-breaker-select.component.css',
   standalone: true
 })
-export class TypeSelectComponent implements ControlValueAccessor {
+export class TieBreakerSelectComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
-  @Input() name: string = "typeId";
+  @Input() name: string = 'tieBreakerId';
 
   disabled: boolean = false;
   value: any = '';
 
-  types: Type[] = [];
+  tieBreakers: TieBreaker[] = [];
 
-  constructor(@Optional() @Self() public ngControl: NgControl, private typeService: TypeService, private toastService: ToastService){
+  constructor(@Optional() @Self() public ngControl: NgControl, private tieBreakerService: TieBreakerService, private toastService: ToastService){
     if(this.ngControl){
       this.ngControl.valueAccessor = this;
     }
   }
 
   ngOnInit(){
-    this.getTypes();
+    this.getTieBreakers();
   }
 
   onChange = (value: any) => {};
@@ -39,7 +39,7 @@ export class TypeSelectComponent implements ControlValueAccessor {
     this.value = value ?? '';
   }
 
-  registerOnChange(fn: any): void{
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
@@ -57,9 +57,9 @@ export class TypeSelectComponent implements ControlValueAccessor {
     this.onChange(this.value);
   }
 
-  getTypes(){
-    this.typeService.getTypes().subscribe({
-      next: (response: any) => this.types = response.data,
+  getTieBreakers(){
+    this.tieBreakerService.getTieBreakers().subscribe({
+      next: (response: any) => this.tieBreakers = response.data,
       error: (err) => this.toastService.warning(handleErrorMessages(err))
     })
   }

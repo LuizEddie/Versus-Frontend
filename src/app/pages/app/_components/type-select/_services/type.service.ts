@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../../../../environments/environment';
+import { environment } from '../../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TieBreakerService {
+export class TypeService {
 
-  private readonly url = `${environment.url}/TournamentTieBreaker`;
+  private readonly url = `${environment.url}/TournamentTypes`;
 
   constructor(private http: HttpClient) { }
 
-  getTieBreakers(){
+  getTypes(){
     return this.http.get(`${this.url}`);
   }
 }

@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { InputComponent } from "../../../shared/components/layout/input/input.component";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TieBreakerSelectComponent } from "./_components/tie-breaker-select/tie-breaker-select.component";
 import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
 import { ToastService } from '../../../shared/services/toast/toast.service';
-import { TypeSelectComponent } from "./_components/type-select/type-select.component";
-import { WinConditionSelectComponent } from "./_components/win-condition-select/win-condition-select.component";
 import { CreateTournamentService } from './_services/create-tournament.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { RowComponent } from "../../../shared/components/layout/row/row.component";
 import { ColComponent } from "../../../shared/components/layout/col/col.component";
+import { TieBreakerSelectComponent } from '../_components/tie-breaker-select/tie-breaker-select.component';
+import { TypeSelectComponent } from '../_components/type-select/type-select.component';
+import { WinConditionSelectComponent } from '../_components/win-condition-select/win-condition-select.component';
 
 @Component({
   selector: 'app-create-tournament',
@@ -54,6 +54,7 @@ export class CreateTournamentComponent {
         spec.get("qtyRounds")?.addValidators(Validators.required);
         spec.get("qtyGroups")?.addValidators(Validators.required);
         spec.get("matchDuration")?.addValidators(Validators.required);
+        spec.get('tieBreakerId')?.addValidators(Validators.required);
       } else {
         spec.get("pointsPerWin")?.clearValidators();
         spec.get("pointsPerDraw")?.clearValidators();
@@ -61,6 +62,7 @@ export class CreateTournamentComponent {
         spec.get("qtyRounds")?.clearValidators();
         spec.get("qtyGroups")?.clearValidators();
         spec.get("matchDuration")?.clearValidators();
+        spec.get('tieBreakerId')?.clearValidators();
       }
 
       spec.updateValueAndValidity();

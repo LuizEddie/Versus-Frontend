@@ -1,41 +1,43 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { WinCondition } from './_models/win-condition.models';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { WinConditionService } from './_services/win-condition.service';
-import { ToastService } from '../../../../../shared/services/toast/toast.service';
-import { handleErrorMessages } from '../../../../../shared/utils/api-error-messages';
-import { getValidationMessage } from '../../../../../shared/utils/validation-messages';
+import { Type } from './_models/type.models';
+import { TypeService } from './_services/type.service';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { handleErrorMessages } from '../../../../shared/utils/api-error-messages';
+import { getValidationMessage } from '../../../../shared/utils/validation-messages';
+
 
 @Component({
-  selector: 'app-win-condition-select',
+  selector: 'app-type-select',
   imports: [],
-  templateUrl: './win-condition-select.component.html',
-  styleUrl: './win-condition-select.component.css'
+  templateUrl: './type-select.component.html',
+  styleUrl: './type-select.component.css',
+  standalone: true
 })
-export class WinConditionSelectComponent implements ControlValueAccessor {
+export class TypeSelectComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
   @Input() name: string = "typeId";
 
   disabled: boolean = false;
-  value: any = "";
+  value: any = '';
 
-  winConditions: WinCondition[] = [];
+  types: Type[] = [];
 
-  constructor(@Optional() @Self() public ngControl: NgControl, private winConditionService: WinConditionService, private toastService: ToastService){
+  constructor(@Optional() @Self() public ngControl: NgControl, private typeService: TypeService, private toastService: ToastService){
     if(this.ngControl){
       this.ngControl.valueAccessor = this;
     }
   }
 
   ngOnInit(){
-    this.getWinConditions();
+    this.getTypes();
   }
 
   onChange = (value: any) => {};
   onTouched = () => {};
 
   writeValue(value: any): void {
-    this.value = value ?? "";
+    this.value = value ?? '';
   }
 
   registerOnChange(fn: any): void{
@@ -46,7 +48,7 @@ export class WinConditionSelectComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean): void{
+  setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
@@ -56,9 +58,9 @@ export class WinConditionSelectComponent implements ControlValueAccessor {
     this.onChange(this.value);
   }
 
-  getWinConditions(){
-    this.winConditionService.getWinConditions().subscribe({
-      next: (response: any) => this.winConditions = response.data,
+  getTypes(){
+    this.typeService.getTypes().subscribe({
+      next: (response: any) => this.types = response.data,
       error: (err) => this.toastService.warning(handleErrorMessages(err))
     })
   }

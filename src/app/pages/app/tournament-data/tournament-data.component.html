@@ -1,8 +1,8 @@
 <app-row>
     <app-col>
+        <h1 class="text-3xl">Dados do Torneio</h1>
         <app-tabs>
             <app-tab label="Dados" [active]="true">
-
                 <app-row>
                     <app-col>
                         <form [formGroup]="formData" (ngSubmit)="handleSubmit()">
@@ -59,12 +59,16 @@
                                 </app-row>
                             </div>
                             <div formArrayName="players" class="mt-2">
+
+
                                 <app-row>
                                     <app-col>
                                         <div class="flex flex-row">
                                             <h4 class="text-2xl mr-1">Jogadores</h4>
+                                            @if(data.tournamentStatus?.id === 1){
                                             <app-button type="button" variant="success"
                                                 (click)="addPlayer()">+</app-button>
+                                            }
                                         </div>
                                     </app-col>
                                 </app-row>
@@ -75,10 +79,10 @@
                                         <div [formGroupName]="$index" class="flex flex-row">
                                             <div class="w-10/12">
                                                 <app-input formControlName="name" label="Nome do Jogador"
-                                                    [required]="true"
-                                                    placeholder="Digite o nome do jogador"></app-input>
+                                                    [required]="true" placeholder="Digite o nome do jogador"
+                                                    (change)="updatePlayerName($index)"></app-input>
                                             </div>
-                                            @if(playersArray.length > 2){
+                                            @if((playersArray.length - removedPlayersCount) > 2){
                                             <div class="w-2/12 mt-6 ml-1 mr-1">
                                                 <app-button type="button" variant="danger"
                                                     (click)="removePlayer($index)">-</app-button>
@@ -90,23 +94,30 @@
                                     }
                                 </app-row>
                             </div>
+                            @if(data.tournamentStatus?.id === 1){
                             <app-row>
                                 <app-col>
-                                    <app-button type="submit" [disabled]="disableForm">Salvar</app-button>
+                                    <app-button type="submit" [disabled]="disableForm">Iniciar Torneio</app-button>
                                 </app-col>
                             </app-row>
+                            }
+
                         </form>
                     </app-col>
                 </app-row>
             </app-tab>
+            @if(data.tournamentSpecs?.type?.id === 2 && data.tournamentStatus?.id !== 1){
             <app-tab label="Pontos">
                 Pontos
             </app-tab>
+            }
+            @if(data.tournamentSpecs?.type?.id === 1 && data.tournamentStatus?.id !== 1){
             <app-tab label="Chaves">
                 Chaves
                 <div class="overflow-x-auto">
                 </div>
             </app-tab>
+            }
         </app-tabs>
     </app-col>
 </app-row>
