@@ -8,10 +8,28 @@ import { HttpClient } from '@angular/common/http';
 export class TournamentDataService {
 
   private readonly url = `${environment.url}/Tournaments`;
+  private readonly playerUrl = `${environment.url}/Players`;
+  private readonly specsUrl = `${environment.url}/TournamentSpecs`;
 
   constructor(private http: HttpClient) { }
 
   getTournamentById(id: string | null){
     return this.http.get(`${this.url}/${id}`);
+  }
+
+  deletePlayer(playerId: number | null){
+    return this.http.delete(`${this.playerUrl}/${playerId}`);
+  }
+
+  updateTournamentSpec(id: number | null, specs: any){
+    return this.http.patch(`${this.specsUrl}/${id}`, specs);
+  }
+
+  updateTournament(id: number | null, params: any){
+    return this.http.patch(`${this.url}/${id}`, params);
+  }
+
+  updatePlayer(id: number | null, params: any){
+    return this.http.patch(`${this.playerUrl}/${id}`, params);
   }
 }

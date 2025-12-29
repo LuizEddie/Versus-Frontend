@@ -70,6 +70,7 @@
                                 </app-row>
                                 <app-row>
                                     @for(player of playersArray.controls; track player){
+                                    @if(player.value?._state !== 'removed'){
                                     <app-col [sm]="6" [lg]="4" [xl]="3">
                                         <div [formGroupName]="$index" class="flex flex-row">
                                             <div class="w-10/12">
@@ -83,9 +84,9 @@
                                                     (click)="removePlayer($index)">-</app-button>
                                             </div>
                                             }
-
                                         </div>
                                     </app-col>
+                                    }
                                     }
                                 </app-row>
                             </div>

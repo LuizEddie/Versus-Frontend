@@ -14,6 +14,7 @@ export class InputComponent {
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
   @Input() required: boolean = false;
+  @Input() readOnly: boolean = false;
   
   value: any = '';
   disabled: boolean = false;

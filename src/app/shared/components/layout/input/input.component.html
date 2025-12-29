@@ -3,11 +3,12 @@
         {{label}}
         @if(required) { <span class="text-red-600">*</span> }
     </label>
-    <input [type]="type" class="border border-gray-300 bg-white rounded-[0.5rem] p-1 
+    <input [type]="type" class="border border-gray-300 bg-white rounded-lg p-1 
             focus:outline-none focus:ring transition-all
             disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed" 
         [placeholder]="placeholder" 
         [disabled]="disabled" 
+        [readOnly]="readOnly"
         [value]="value" 
         (input)="handleInput($event)"
         (blur)="onTouched()" />

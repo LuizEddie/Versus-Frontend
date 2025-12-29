@@ -38,7 +38,7 @@ export class TournamentDataComponent {
         qtyRounds: ['', [Validators.pattern(/^[0-9]+$/)]],
         qtyGroups: ['', [Validators.pattern(/^[0-9]+$/)]],
         winConditionId: ['', [Validators.required]],
-        typeId: ['', [Validators.required]],
+        typeId: [{value: '', disabled: true}, [Validators.required]],
         tieBreakerId: [''],
         matchDuration: ['']
       })
@@ -78,23 +78,32 @@ export class TournamentDataComponent {
     return this.formData.get('players') as FormArray;
   }
 
-  createPlayer() {
+  createPlayer(state: 'original' | 'new' | 'removed' = 'original', players?: any): FormGroup {
     return this.fb.group({
-      name: ['', Validators.required]
+      id: [players?.id || null],
+      name: [{value: players?.name || '', disabled: this.data.tournamentStatus.id !== 1}, Validators.required],
+      _state: [state] //original | new | removed
     })
   }
 
   addPlayer() {
-    this.playersArray.push(this.createPlayer());
+    this.playersArray.push(this.createPlayer('new'));
   }
 
   removePlayer(idx: number) {
+
+    const player = this.playersArray.at(idx) as FormGroup;
 
     if (this.playersArray.length === 2) {
       this.toast.warning("Devem haver no mínimo dois jogadores!");
       return;
     }
-    this.playersArray.removeAt(idx);
+
+    if (player.value.id) {
+      player.patchValue({ _state: 'removed' });
+    } else {
+      this.playersArray.removeAt(idx);
+    }
   }
 
   handleSubmit() {
@@ -138,7 +147,6 @@ export class TournamentDataComponent {
     this.tournamentDataServices.getTournamentById(id).subscribe({
       next: (response: any) => {
         this.data = response.data;
-        console.log(this.data);
         this.formData.get('name')?.setValue(this.data.name);
         this.formData.get('tournamentSpec.winConditionId')?.setValue(this.data.tournamentSpecs.winCondition.id);
         this.formData.get('tournamentSpec.typeId')?.setValue(this.data.tournamentSpecs.type.id);
@@ -152,12 +160,31 @@ export class TournamentDataComponent {
           this.formData.get('tournamentSpec.matchDuration')?.setValue(this.data.tournamentSpecs.matchDuration);
         }
 
+        let players = this.data.playerDetails || [];
+        this.playersArray.clear();
+        players.map((item: any) => {
+          this.playersArray.push(this.createPlayer('original', item));
+        });
+        this.applyStatusRules();
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false })
       },
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
         this.router.navigate(['/home']);
       }
+    });
+  }
+
+  applyStatusRules(){
+    const spec = this.formData.get('tournamentSpec') as FormGroup;
+    const isEditable = this.data.tournamentStatus?.id === 1;
+
+    Object.keys(spec.controls).forEach(key => {
+      if(key === 'typeId') return;
+
+      const control = spec.get(key);
+
+      isEditable ? control?.enable() : control?.disable();
     });
   }
 }
