@@ -25,7 +25,8 @@ import Swal from 'sweetalert2';
 })
 export class TournamentDataComponent {
 
-  data: any = {}
+  data: any = {};
+  matches: any = {};
   formData!: FormGroup;
   disableForm: boolean = false;
 
@@ -180,13 +181,16 @@ export class TournamentDataComponent {
         ) : of(null)
       ),
 
-      concatMap(() => newPlayers.length ? this.tournamentDataServices.addPlayers(this.data.id, newPlayers) : of(null))
+      concatMap(() => newPlayers.length ? this.tournamentDataServices.addPlayers(this.data.id, newPlayers) : of(null)),
+
+      concatMap(() => this.data.tournamentSpecs.type.id === 1 ? this.tournamentDataServices.createFirstKnockOutMatch(this.data.id) : of(null))
 
     ).subscribe({
       next: (_: any) => {
         this.toast.finishToast(toastId, { message: `Torneio iniciado com sucesso!`, type: 'success', duration: 500, closeable: true, persistent: false })
         this.disableForm = false;
-        let swal = Swal.fire({
+        
+        Swal.fire({
           title: "Torneio iniciado com sucesso. O que deseja fazer?",
           showCancelButton: true,
           cancelButtonColor: "red",
@@ -202,9 +206,6 @@ export class TournamentDataComponent {
 
           this.router.navigate(['/home']);
         });
-
-         //Só para teste
-        //Aqui vai o swal para definir o que o usuario deseja fazer: prosseguir com o torneio ou voltar para a home
       },
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
@@ -229,6 +230,7 @@ export class TournamentDataComponent {
         this.formData.get('name')?.setValue(this.data.name);
         this.formData.get('tournamentSpec.winConditionId')?.setValue(this.data.tournamentSpecs.winCondition.id);
         this.formData.get('tournamentSpec.typeId')?.setValue(this.data.tournamentSpecs.type.id);
+        
         if (this.data.tournamentSpecs.type.id === 2) {
           this.formData.get('tournamentSpec.tieBreakerId')?.setValue(this.data.tournamentSpecs.tieBreaker.id);
           this.formData.get('tournamentSpec.pointsPerWin')?.setValue(this.data.tournamentSpecs.pointsPerWin);
@@ -244,6 +246,25 @@ export class TournamentDataComponent {
         players.map((item: any) => {
           this.playersArray.push(this.createPlayer('original', item));
         });
+
+        if(this.data.tournamentStatus.id !== 1 && this.data.tournamentSpecs.type.id === 1){
+          let matches = this.data.matchDetails || [];
+
+          let groupedByRound = matches.reduce((acc: any, match: any) => {
+            const round = match.round ?? 'Sem rodada';
+
+            if(!acc[round]){
+              acc[round] = [];
+            }
+
+            acc[round].push(match);
+          
+            return acc;
+          }, {});
+
+          this.matches = groupedByRound;
+        }
+
         this.applyStatusRules();
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false })
       },

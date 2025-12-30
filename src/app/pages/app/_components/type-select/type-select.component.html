@@ -6,7 +6,7 @@
     <select [name]="name" [id]="name" [disabled]="disabled" (change)="handleSelect($event)"
         (blur)="onTouched()" class="border border-gray-300 bg-white rounded-lg p-1
         focus:outline-none focus:ring transition-all
-        disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
+        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed">
         <option value="">Selecione um valor...</option>
         @for(t of types; track t.id){
             <option [value]="t.id" [selected]="t.id === value">{{ t.name }}</option>

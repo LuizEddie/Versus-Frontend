@@ -59,8 +59,6 @@
                                 </app-row>
                             </div>
                             <div formArrayName="players" class="mt-2">
-
-
                                 <app-row>
                                     <app-col>
                                         <div class="flex flex-row">
@@ -82,7 +80,7 @@
                                                     [required]="true" placeholder="Digite o nome do jogador"
                                                     (change)="updatePlayerName($index)"></app-input>
                                             </div>
-                                            @if((playersArray.length - removedPlayersCount) > 2){
+                                            @if((playersArray.length - removedPlayersCount) > 2 && data.tournamentStatus?.id === 1){
                                             <div class="w-2/12 mt-6 ml-1 mr-1">
                                                 <app-button type="button" variant="danger"
                                                     (click)="removePlayer($index)">-</app-button>
@@ -114,7 +112,333 @@
             @if(data.tournamentSpecs?.type?.id === 1 && data.tournamentStatus?.id !== 1){
             <app-tab label="Chaves">
                 Chaves
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto flex flex-row min-w-full">
+                    <div class="flex-1 min-w-80">
+                        Fase 1
+                        <div class="flex flex-col h-full justify-center">
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <div
+                                                class="border border-gray-300 bg-gray-100 rounded-lg p-2 text-gray-700">
+                                                Opa
+                                            </div>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <div
+                                                class="border border-gray-300 bg-gray-100 rounded-lg p-2 text-gray-700">
+                                                Opa2
+                                            </div>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-80">
+                        Fase 2
+                        <div class="flex flex-col h-full justify-center">
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-80">
+                        Fase 3
+                        <div class="flex flex-col h-full justify-center">
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-80">
+                        Fase 4
+                        <div class="flex flex-col h-full justify-center">
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <app-input [readOnly]="true"></app-input>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" variant="success">V</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </app-tab>
             }

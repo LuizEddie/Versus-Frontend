@@ -6,7 +6,7 @@
     <div class="flex flex-row text-center w-full">
 
         @if(beforeOrAfterInput === 'before'){
-        <div class="flex bg-gray-200 rounded-[0.5rem] justify-center items-center text-center w-2/12 cursor-pointer"
+        <div class="flex bg-gray-200 rounded-lg justify-center items-center text-center w-2/12 cursor-pointer"
             (click)="inputGroupAddonFunction?.()">
             @if(iconOrText === 'icon'){
             <i class="pi {{addonIcon}}"></i>
@@ -18,9 +18,9 @@
         </div>
         }
 
-        <input [type]="type" class="border border-gray-300 bg-white rounded-[0.5rem] p-1 w-10/12 
+        <input [type]="type" class="border border-gray-300 bg-white rounded-lg p-1 w-10/12 
             focus:outline-none focus:ring transition-all
-            disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed
+            disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
             [class.border-gray-300]='!invalid'
             [class.border-red-500]='invalid'
             [class.border-blue-300]='!invalid'
@@ -28,7 +28,7 @@
             (input)="handleInput($event)" (blur)="onTouched()" />
 
         @if(beforeOrAfterInput === 'after'){
-        <div class="flex bg-gray-200 rounded-[0.5rem] justify-center items-center w-2/12 cursor-pointer"
+        <div class="flex bg-gray-200 rounded-lg justify-center items-center w-2/12 cursor-pointer"
             (click)="inputGroupAddonFunction?.()">
             @if(iconOrText === 'icon'){
             <i class="pi {{addonIcon}} text-gray-500"></i>

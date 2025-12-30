@@ -10,6 +10,7 @@ export class TournamentDataService {
   private readonly url = `${environment.url}/Tournaments`;
   private readonly playerUrl = `${environment.url}/Players`;
   private readonly specsUrl = `${environment.url}/TournamentSpecs`;
+  private readonly matchesUrl = `${environment.url}/Matches`;
 
   constructor(private http: HttpClient) { }
 
@@ -35,5 +36,9 @@ export class TournamentDataService {
 
   addPlayers(tournamentId: number | null, params: any){
     return this.http.post(`${this.playerUrl}/${tournamentId}`, params);
+  }
+
+  createFirstKnockOutMatch(tournamentId: number | null){
+    return this.http.post(`${this.matchesUrl}/create-first-knockout-stage-matches/${tournamentId}`, {});
   }
 }
