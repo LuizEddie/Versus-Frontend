@@ -31,7 +31,7 @@
 
         <ng-template #actionFinalizado let-rowData>
             <app-dropdown>
-                <app-dropdown-item label="Visualizar"></app-dropdown-item>
+                <app-dropdown-item label="Visualizar" [routerLink]="'/tournament-data/' + rowData.id"></app-dropdown-item>
             </app-dropdown>
         </ng-template>
         <swal #cancelSwal title="Cancelar Torneio?" text="A ação não pode ser desfeita" [showCancelButton]="true"

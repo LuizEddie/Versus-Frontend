@@ -41,4 +41,17 @@ export class TournamentDataService {
   createFirstKnockOutMatch(tournamentId: number | null){
     return this.http.post(`${this.matchesUrl}/create-first-knockout-stage-matches/${tournamentId}`, {});
   }
+
+  defineWinner(matchId: number, winnerId: number){
+    return this.http.patch(`${this.matchesUrl}/${matchId}`, { winnerId: winnerId});
+  }
+
+  findMatch(params: any){
+    return this.http.get(`${this.matchesUrl}/find-single-match`, { params: params});
+  }
+
+  updateMatch(id: number, params: any){
+    return this.http.patch(`${this.matchesUrl}/${id}`, params);
+  }
+
 }

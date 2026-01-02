@@ -160,25 +160,25 @@ export class TournamentDataComponent {
     }
 
     this.tournamentDataServices.updateTournament(this.data.id, tournamentPayload).pipe(
-      
+
       concatMap(() => this.tournamentDataServices.updateTournamentSpec(this.data.tournamentSpecs.id, tournamentSpecsPayload)),
-      
-      concatMap(() => 
-        updatedPlayers.length 
-        ? from(updatedPlayers).pipe(
-          concatMap((player: any) => 
-            this.tournamentDataServices.updatePlayer(player.id, player)
-          ), toArray()
-        ) : of(null)
+
+      concatMap(() =>
+        updatedPlayers.length
+          ? from(updatedPlayers).pipe(
+            concatMap((player: any) =>
+              this.tournamentDataServices.updatePlayer(player.id, player)
+            ), toArray()
+          ) : of(null)
       ),
 
-      concatMap(() => 
-        removedPlayers.length 
-        ? from(removedPlayers).pipe(
-          concatMap((player: any) => 
-            this.tournamentDataServices.deletePlayer(player.id)
-          ), toArray()
-        ) : of(null)
+      concatMap(() =>
+        removedPlayers.length
+          ? from(removedPlayers).pipe(
+            concatMap((player: any) =>
+              this.tournamentDataServices.deletePlayer(player.id)
+            ), toArray()
+          ) : of(null)
       ),
 
       concatMap(() => newPlayers.length ? this.tournamentDataServices.addPlayers(this.data.id, newPlayers) : of(null)),
@@ -189,7 +189,7 @@ export class TournamentDataComponent {
       next: (_: any) => {
         this.toast.finishToast(toastId, { message: `Torneio iniciado com sucesso!`, type: 'success', duration: 500, closeable: true, persistent: false })
         this.disableForm = false;
-        
+
         Swal.fire({
           title: "Torneio iniciado com sucesso. O que deseja fazer?",
           showCancelButton: true,
@@ -199,7 +199,7 @@ export class TournamentDataComponent {
           confirmButtonColor: "green",
           confirmButtonText: "Ir para o torneio",
         }).then((result) => {
-          if(result.isConfirmed){
+          if (result.isConfirmed) {
             this.getTournamentById();
             return;
           }
@@ -230,7 +230,7 @@ export class TournamentDataComponent {
         this.formData.get('name')?.setValue(this.data.name);
         this.formData.get('tournamentSpec.winConditionId')?.setValue(this.data.tournamentSpecs.winCondition.id);
         this.formData.get('tournamentSpec.typeId')?.setValue(this.data.tournamentSpecs.type.id);
-        
+
         if (this.data.tournamentSpecs.type.id === 2) {
           this.formData.get('tournamentSpec.tieBreakerId')?.setValue(this.data.tournamentSpecs.tieBreaker.id);
           this.formData.get('tournamentSpec.pointsPerWin')?.setValue(this.data.tournamentSpecs.pointsPerWin);
@@ -247,22 +247,24 @@ export class TournamentDataComponent {
           this.playersArray.push(this.createPlayer('original', item));
         });
 
-        if(this.data.tournamentStatus.id !== 1 && this.data.tournamentSpecs.type.id === 1){
+        if (this.data.tournamentStatus.id !== 1 && this.data.tournamentSpecs.type.id === 1) {
           let matches = this.data.matchDetails || [];
 
           let groupedByRound = matches.reduce((acc: any, match: any) => {
             const round = match.round ?? 'Sem rodada';
 
-            if(!acc[round]){
+            if (!acc[round]) {
               acc[round] = [];
             }
 
             acc[round].push(match);
-          
+
             return acc;
           }, {});
 
-          this.matches = groupedByRound;
+          this.matches = Object.entries(groupedByRound).map(([round, matches]) => ({
+            round, matches
+          }));
         }
 
         this.applyStatusRules();
@@ -271,6 +273,102 @@ export class TournamentDataComponent {
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
         this.router.navigate(['/home']);
+      }
+    });
+  }
+
+  defineWinner(winner: any, match: any) {
+
+    if (match?.winner !== null) {
+      this.toast.warning("O vencedor já foi definido!");
+      return;
+    }
+
+    Swal.fire({
+      title: `Definir o ${winner.name} como vencedor da partida?`,
+      showCancelButton: true,
+      cancelButtonColor: "red",
+      cancelButtonText: "Não",
+      showConfirmButton: true,
+      confirmButtonColor: "green",
+      confirmButtonText: "Sim",
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        const toastId = this.toast.show({ message: "Carregando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+
+        this.tournamentDataServices.defineWinner(match.id, winner.id).subscribe({
+          next: (_: any) => {
+            if (match.round !== 'Final') {
+              this.defineNextMatch(winner, match, toastId);
+              return;
+            }
+            this.tournamentDataServices.updateTournament(this.data.id, { statusId: 2 }).subscribe({
+              next: (_: any) => {
+                this.toast.finishToast(toastId, { message: `Torneio Finalizado!`, type: 'success', duration: 500, closeable: true, persistent: false });
+                Swal.fire(`Parabéns ${winner.name}, você ganhou o torneio!`);
+                this.getTournamentById();
+                //Colocar aqui uma opção para ficar no torneio ou voltar para tela inicial
+
+                //Deixar as funções mais elegantementes escritas
+              },
+              error: (err: any) => {
+                this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
+              }
+            })
+
+          },
+          error: (err: any) => {
+            this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
+          }
+        })
+      }
+    });
+  }
+
+  defineNextMatch(winner: any, match: any, toastId: any) {
+
+    let round = '';
+
+    switch (match.round) {
+      case '4ª':
+        round = 'Semifinal'
+        break;
+      case 'Semifinal':
+        round = 'Final'
+        break;
+      default:
+        round = (+match.round.replace('ª', '') - 1).toString();
+    }
+
+    let params = {
+      key: +match.key % 2 === 0 ? +match.key / 2 : (+match.key + 1) / 2,
+      group: match.group,
+      tournamentId: this.data.id,
+      round: round
+    }
+
+    this.tournamentDataServices.findMatch(params).subscribe({
+      next: (response: any) => {
+        let matchData = response.data;
+
+        let params = {
+          player1Id: matchData?.player1 === null && matchData?.player2 === null ? winner?.id : matchData?.player1?.id,
+          player2Id: matchData?.player1 !== null && matchData?.player2 === null ? winner?.id : matchData?.player2?.id,
+        }
+
+        this.tournamentDataServices.updateMatch(matchData.id, params).subscribe({
+          next: (response: any) => {
+            this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
+            this.getTournamentById();
+          },
+          error: (err: any) => {
+            this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+          }
+        });
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
       }
     });
   }
@@ -290,5 +388,13 @@ export class TournamentDataComponent {
 
       isEditable ? control?.enable() : control?.disable();
     });
+  }
+
+  defineWinnerButtonVariant(match: any, player: any) {
+    if (match?.winner?.id === null || match?.winner?.id === undefined) return 'info';
+    if (match?.winner?.id === player?.id) return 'success';
+    if (match?.winner?.id !== player?.id) return 'danger';
+
+    return 'primary';
   }
 }

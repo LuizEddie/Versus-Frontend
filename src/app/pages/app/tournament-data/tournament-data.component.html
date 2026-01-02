@@ -80,7 +80,8 @@
                                                     [required]="true" placeholder="Digite o nome do jogador"
                                                     (change)="updatePlayerName($index)"></app-input>
                                             </div>
-                                            @if((playersArray.length - removedPlayersCount) > 2 && data.tournamentStatus?.id === 1){
+                                            @if((playersArray.length - removedPlayersCount) > 2 &&
+                                            data.tournamentStatus?.id === 1){
                                             <div class="w-2/12 mt-6 ml-1 mr-1">
                                                 <app-button type="button" variant="danger"
                                                     (click)="removePlayer($index)">-</app-button>
@@ -113,10 +114,56 @@
             <app-tab label="Chaves">
                 Chaves
                 <div class="overflow-x-auto flex flex-row min-w-full">
-                    <div class="flex-1 min-w-80">
+                    @for(round of matches; track round.round){
+                    <div class="flex-1 min-w-80 max-w-80">
+                        Fase: {{round.round}}
+                        <div class="flex flex-col h-full justify-around">
+                            @for(matchData of round.matches; track matchData.id){
+
+                            <div class="border rounded-sm border-gray-300 m-1">
+                                <app-row>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <div
+                                                class="border border-gray-300 bg-gray-100 rounded-lg p-2 text-gray-700">
+                                                {{matchData?.player1?.name || 'Indefinido'}}
+                                            </div>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" [disabled]="matchData?.player1?.id === null || matchData?.winner !== null" [keepColorOnDisable]="matchData?.winner === null ? false : true" [variant]="defineWinnerButtonVariant(matchData, matchData?.player1)" 
+                                            (click)="defineWinner(matchData?.player1, matchData)">{{defineWinnerButtonVariant(matchData, matchData?.player1) === 'danger' ? 'P' : 'V'}}</app-button>
+                                        </div>
+                                    </app-col>
+                                    <app-col class="flex flex-row">
+                                        <div class="w-10/12 mr-1">
+                                            <div
+                                                class="border border-gray-300 bg-gray-100 rounded-lg p-2 text-gray-700">
+                                                {{matchData?.player2?.name || 'Indefinido'}}
+                                            </div>
+                                        </div>
+                                        <div class="w-2/12">
+                                            <app-button type="button" [disabled]="matchData?.player2?.id === null || matchData?.winner !== null" [keepColorOnDisable]="matchData?.winner === null ? false : true" [variant]="defineWinnerButtonVariant(matchData, matchData?.player2)" 
+                                            (click)="defineWinner(matchData?.player2, matchData)">{{defineWinnerButtonVariant(matchData, matchData?.player2) === 'danger' ? 'P' : 'V'}}</app-button>
+                                        </div>
+                                    </app-col>
+                                </app-row>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
+            </app-tab>
+            }
+        </app-tabs>
+    </app-col>
+</app-row>
+
+<!-- <div class="flex-1 min-w-80">
                         Fase 1
                         <div class="flex flex-col h-full justify-center">
                             <div class="border rounded-sm border-gray-300 m-1">
+                                //Iterar aqui
                                 <app-row>
                                     <app-col class="flex flex-row">
                                         <div class="w-10/12 mr-1">
@@ -438,10 +485,4 @@
                                 </app-row>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </app-tab>
-            }
-        </app-tabs>
-    </app-col>
-</app-row>
+                    </div> -->

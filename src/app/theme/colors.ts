@@ -1,3 +1,5 @@
+import { Variant } from "../shared/models/variants.models"
+
 export const BUTTON = {
     default: {
         primary: "bg-orange-600 text-white hover:text-black hover:bg-orange-300",
