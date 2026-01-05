@@ -95,7 +95,7 @@ export class HomeComponent {
           status: item.tournamentStatus.name || '',
           tipo: item.tournamentSpecs.type.name || '',
           participantes: item.playerDetails.length || 0,
-          vencedor: '',
+          vencedor: item?.winnerDetails?.name || '',
           data_finalizacao: item.finishedAt ? new Date(item.finishedAt).toLocaleDateString('pt-BR') : ''
         })) || [];
         this.dataEmAndamento = data.filter((item: any) => item.status === "Em Andamento");

@@ -10,7 +10,7 @@ import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
 import { InputComponent } from "../../../shared/components/layout/input/input.component";
-import { concatMap, from, of, toArray } from 'rxjs';
+import { catchError, concatMap, EMPTY, finalize, from, of, switchMap, tap, toArray } from 'rxjs';
 import { WinConditionSelectComponent } from '../_components/win-condition-select/win-condition-select.component';
 import { TypeSelectComponent } from '../_components/type-select/type-select.component';
 import { TieBreakerSelectComponent } from '../_components/tie-breaker-select/tie-breaker-select.component';
@@ -294,81 +294,71 @@ export class TournamentDataComponent {
       confirmButtonText: "Sim",
     }).then((result) => {
       if (result.isConfirmed) {
-
-        const toastId = this.toast.show({ message: "Carregando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
-
-        this.tournamentDataServices.defineWinner(match.id, winner.id).subscribe({
-          next: (_: any) => {
-            if (match.round !== 'Final') {
-              this.defineNextMatch(winner, match, toastId);
-              return;
-            }
-            this.tournamentDataServices.updateTournament(this.data.id, { statusId: 2 }).subscribe({
-              next: (_: any) => {
-                this.toast.finishToast(toastId, { message: `Torneio Finalizado!`, type: 'success', duration: 500, closeable: true, persistent: false });
-                Swal.fire(`Parabéns ${winner.name}, você ganhou o torneio!`);
-                this.getTournamentById();
-                //Colocar aqui uma opção para ficar no torneio ou voltar para tela inicial
-
-                //Deixar as funções mais elegantementes escritas
-              },
-              error: (err: any) => {
-                this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
-              }
-            })
-
-          },
-          error: (err: any) => {
-            this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
-          }
-        })
+        this.handleDefineWinner(winner, match);
       }
     });
   }
 
-  defineNextMatch(winner: any, match: any, toastId: any) {
+  defineNextMatch$(winner: any, match: any) {
+    const round = this.getNextRound(match.round);
 
-    let round = '';
-
-    switch (match.round) {
-      case '4ª':
-        round = 'Semifinal'
-        break;
-      case 'Semifinal':
-        round = 'Final'
-        break;
-      default:
-        round = (+match.round.replace('ª', '') - 1).toString();
-    }
-
-    let params = {
+    const findParams = {
       key: +match.key % 2 === 0 ? +match.key / 2 : (+match.key + 1) / 2,
       group: match.group,
       tournamentId: this.data.id,
       round: round
     }
 
-    this.tournamentDataServices.findMatch(params).subscribe({
-      next: (response: any) => {
-        let matchData = response.data;
+    return this.tournamentDataServices.findMatch(findParams).pipe(
+      switchMap((response: any) => {
+        const matchData = response.data;
 
-        let params = {
-          player1Id: matchData?.player1 === null && matchData?.player2 === null ? winner?.id : matchData?.player1?.id,
-          player2Id: matchData?.player1 !== null && matchData?.player2 === null ? winner?.id : matchData?.player2?.id,
-        }
+        const updateParams = +match.key % 2 === 0 ? { player2Id: winner?.id } : { player1Id: winner?.id }
 
-        this.tournamentDataServices.updateMatch(matchData.id, params).subscribe({
-          next: (response: any) => {
-            this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
-            this.getTournamentById();
-          },
-          error: (err: any) => {
-            this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
-          }
-        });
-      },
-      error: (err: any) => {
+        return this.tournamentDataServices.updateMatch(matchData.id, updateParams);
+      })
+    );
+  }
+
+  handleDefineWinner(winner: any, match: any) {
+    const toastId = this.toast.show({ message: "Carregando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+
+    this.tournamentDataServices.defineWinner(match.id, winner.id).pipe(
+      switchMap(() => {
+        if (match.round === 'Final') return this.tournamentDataServices.updateTournament(this.data.id, { statusId: 2, winnerId: winner.id });
+        return this.defineNextMatch$(winner, match);
+      }),
+
+      tap(() => this.getTournamentById()),
+
+      finalize(() => {
+        this.toast.finishToast(toastId, { duration: 500, closeable: true, persistent: false })
+      }),
+
+      catchError(err => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+        return EMPTY;
+      })
+
+    ).subscribe(() => {
+      if (match.round === 'Final') {
+        this.toast.finishToast(toastId, { message: `Torneio Finalizado`, type: 'success', duration: 500, closeable: true, persistent: false });
+
+        Swal.fire({
+          title: `Parabéns ${winner.name}, você ganhou o torneio!`,
+          text: 'O que deseja fazer agora?',
+          showCancelButton: true,
+          cancelButtonColor: "red",
+          cancelButtonText: "Ficar na página atual",
+          showConfirmButton: true,
+          confirmButtonColor: "green",
+          confirmButtonText: "Voltar para Home",
+          allowOutsideClick: false,
+          allowEscapeKey: false
+        }).then((result) => {
+          if (result.isConfirmed) this.router.navigate(['/home']);
+        });
+
       }
     });
   }
@@ -396,5 +386,20 @@ export class TournamentDataComponent {
     if (match?.winner?.id !== player?.id) return 'danger';
 
     return 'primary';
+  }
+
+  private getNextRound(round: string): string {
+    switch (round) {
+      case '16-avos':
+        return 'Oitavas';
+      case 'Oitavas':
+        return 'Quartas';
+      case 'Quartas':
+        return 'Semifinal';
+      case 'Semifinal':
+        return 'Final';
+      default:
+        return (+round.replace('-avos', '') / 2).toString() + '-avos';
+    }
   }
 }
