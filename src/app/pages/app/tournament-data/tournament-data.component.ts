@@ -89,6 +89,10 @@ export class TournamentDataComponent {
     ).length
   }
 
+  getMatchFlex(roundIndex: number): number {
+    return Math.pow(2, roundIndex);
+  }
+
   createPlayer(state: 'original' | 'new' | 'removed' = 'original', players?: any): FormGroup {
     return this.fb.group({
       id: [players?.id || null],
