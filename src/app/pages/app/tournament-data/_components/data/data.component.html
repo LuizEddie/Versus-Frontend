@@ -1,0 +1,109 @@
+<app-row>
+    <app-col>
+        <form [formGroup]="formData" (ngSubmit)="handleSubmit()">
+            <app-row>
+                <app-col>
+                    <app-input label="Nome" type="text" formControlName="name" placeholder="Digite o nome do torneio"
+                        [required]="true"></app-input>
+                </app-col>
+            </app-row>
+            @if(data.tournamentStatus?.id === 2){
+            <app-row>
+                <app-col>
+                    <div class="flex flex-col text-start w-full">
+                        <label class="mb-1 text-gray-950 font-medium">Vencedor</label>
+                        <div class="border border-gray-300 bg-gray-100 rounded-lg p-2 text-gray-700">
+                            {{data?.winnerDetails?.name || 'Indefinido'}}
+                        </div>
+                    </div>
+
+                </app-col>
+            </app-row>
+            }
+            <div formGroupName="tournamentSpec">
+                <app-row>
+                    <app-col [sm]="6" [md]="4">
+                        <app-win-condition-select [required]="true"
+                            formControlName="winConditionId"></app-win-condition-select>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-type-select [required]="true" formControlName="typeId"></app-type-select>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-tie-breaker-select [required]="true" formControlName="tieBreakerId"
+                            [hidden]="typeId !== 2"></app-tie-breaker-select>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-input label="Duração da Partida" type="time" placeholder="Digite a duração da partida"
+                            [required]="true" formControlName="matchDuration" [hidden]="typeId !== 2"></app-input>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-input label="Pontos por vitória" type="number"
+                            placeholder="Digite a quantidade de pontos após vitória" [required]="true"
+                            formControlName="pointsPerWin" [hidden]="typeId !== 2"></app-input>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-input label="Pontos por empate" type="number"
+                            placeholder="Digite a quantidade de pontos após empate" [required]="true"
+                            formControlName="pointsPerDraw" [hidden]="typeId !== 2"></app-input>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-input label="Pontos por derrota" type="number"
+                            placeholder="Digite a quantidade de pontos após derrota" [required]="true"
+                            formControlName="pointsPerLose" [hidden]="typeId !== 2"></app-input>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-input label="Quantidade de Rounds" type="number"
+                            placeholder="Digite a quantidade de rounds para definição do primeiro lugar"
+                            [required]="true" formControlName="qtyRounds" [hidden]="typeId !== 2"></app-input>
+                    </app-col>
+                    <app-col [sm]="6" [md]="4">
+                        <app-input label="Quantidade de Grupos" type="number"
+                            placeholder="Digite a quantidade de grupos" [required]="true" formControlName="qtyGroups"
+                            [hidden]="typeId !== 2"></app-input>
+                    </app-col>
+                </app-row>
+            </div>
+            <div formArrayName="players" class="mt-2">
+                <app-row>
+                    <app-col>
+                        <div class="flex flex-row">
+                            <h4 class="text-2xl mr-1">Jogadores</h4>
+                            @if(data.tournamentStatus?.id === 1){
+                            <app-button type="button" variant="success" (click)="addPlayer()">+</app-button>
+                            }
+                        </div>
+                    </app-col>
+                </app-row>
+                <app-row>
+                    @for(player of playersArray.controls; track player){
+                    @if(player.value?._state !== 'removed'){
+                    <app-col [sm]="6" [lg]="4" [xl]="3">
+                        <div [formGroupName]="$index" class="flex flex-row">
+                            <div class="w-10/12">
+                                <app-input formControlName="name" label="Nome do Jogador" [required]="true"
+                                    placeholder="Digite o nome do jogador"
+                                    (change)="updatePlayerName($index)"></app-input>
+                            </div>
+                            @if((playersArray.length - removedPlayersCount) > 2 &&
+                            data.tournamentStatus?.id === 1){
+                            <div class="w-2/12 mt-6 ml-1 mr-1">
+                                <app-button type="button" variant="danger" (click)="removePlayer($index)">-</app-button>
+                            </div>
+                            }
+                        </div>
+                    </app-col>
+                    }
+                    }
+                </app-row>
+            </div>
+            @if(data.tournamentStatus?.id === 1){
+            <app-row>
+                <app-col>
+                    <app-button type="submit" [disabled]="disableForm">Iniciar Torneio</app-button>
+                </app-col>
+            </app-row>
+            }
+        </form>
+    </app-col>
+</app-row>
