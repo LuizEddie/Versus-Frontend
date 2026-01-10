@@ -47,7 +47,7 @@ export class LoginComponent {
         this.authService.setAccessToken(response.data);
         this.router.navigate(['/home']);
         this.formData.reset();
-        this.toast.finishToast(toastId, {message: response.message, type: 'success', duration: 5000, closeable: true, persistent: false});
+        this.toast.finishToast(toastId, {message: response.message, type: 'success', duration: 500, closeable: true, persistent: false});
         this.disableForm = false;
       },
       error: (err: any) => {

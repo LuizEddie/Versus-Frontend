@@ -1,12 +1,20 @@
 <div class="relative inline-block">
-    <button
-        [type]="type" [class]="getButtonClass()" [disabled]="disabled"
-        type="button" 
-        (click)="toggle()">
+    @if(dropdownType === "button"){
+    <button [type]="type" [class]="getButtonClass()" [disabled]="disabled" type="button" (click)="toggle()">
         {{ label }} <i [class]="!isOpen ? 'pi pi-angle-down' : 'pi pi-angle-up'"></i>
     </button>
+    }
+    @if(dropdownType === "template"){
+        <div (click)="toggle()">
+            <ng-container [ngTemplateOutlet]="template"></ng-container>
+        </div>
+    }
+
     @if(isOpen){
-    <div class="absolute mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+    <div 
+        class="absolute mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+        [ngClass]="getDropdownPositionClass()"
+    >
         <ng-content></ng-content>
     </div>
     }

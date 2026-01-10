@@ -11,10 +11,10 @@
             </li>
         </ul>
         <ul class="flex list-none justify-center items-center gap-3 cursor-pointer">
-            <li>
-                <img alt="Perfil" class="w-10 h-10 rounded-full"
-                    src="https://wallpapers.com/images/featured/naruto-hd-p23c4c3xyjkcnp6r.jpg" />
-            </li>
+            <app-dropdown [align]="'right'" dropdownType="template" [template]="profileDropdown">
+                <app-dropdown-item label="Ver Perfil" [routerLink]="'/profile'"></app-dropdown-item>
+                <app-dropdown-item label="Sair" [swal]="logoutSwal"></app-dropdown-item>
+            </app-dropdown>
         </ul>
     </div>
     <div class="w-full flex flex-row justify-center flex-1 sm:mt-2">
@@ -27,3 +27,14 @@
         <p class="text-gray-600 text-sm">Desenvolvido por Luiz Eduardo da Silva Magalhães</p>
     </div>
 </div>
+
+<ng-template #profileDropdown>
+    <li>
+        <img alt="Perfil" class="w-10 h-10 rounded-full"
+            src="https://wallpapers.com/images/featured/naruto-hd-p23c4c3xyjkcnp6r.jpg" />
+    </li>
+</ng-template>
+
+<swal #logoutSwal title="Logout" text="Deseja realmente sair?" [showCancelButton]="true" cancelButtonText="Não"
+    [showConfirmButton]="true" confirmButtonText="Sim"
+    [focusCancel]="true" (confirm)="logout()"></swal>

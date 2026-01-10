@@ -11,6 +11,7 @@ import { authGuard } from './shared/guards/auth/auth.guard';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 import { CreateTournamentComponent } from './pages/app/create-tournament/create-tournament.component';
 import { TournamentDataComponent } from './pages/app/tournament-data/tournament-data.component';
+import { ProfileComponent } from './pages/app/profile/profile.component';
 
 export const routes: Routes = [
     {
@@ -59,6 +60,10 @@ export const routes: Routes = [
             {
                 path: 'tournament-data/:id',
                 component: TournamentDataComponent
+            },
+            {
+                path: 'profile',
+                component: ProfileComponent
             },
             {
                 path: '',

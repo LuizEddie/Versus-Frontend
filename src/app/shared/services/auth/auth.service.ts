@@ -35,7 +35,7 @@ export class AuthService {
 
   logout(){
     this.http.post(`${this.url}/logout`, {}, { withCredentials: true}).subscribe();
-    localStorage.removeItem(this.KEY);
+    this.removeAccessToken();
     this.router.navigate(['/auth/login']);
   }
 
