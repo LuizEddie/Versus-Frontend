@@ -1,4 +1,4 @@
-import { Component, Input, Optional, Self } from '@angular/core';
+import { Component, ElementRef, EventEmitter, input, Input, Optional, Output, Self, ViewChild } from '@angular/core';
 import { NgControl, ReactiveFormsModule } from '@angular/forms';
 import { getValidationMessage } from '../../../utils/validation-messages';
 
@@ -10,14 +10,22 @@ import { getValidationMessage } from '../../../utils/validation-messages';
   imports: [ReactiveFormsModule]
 })
 export class InputComponent {
+  @ViewChild('nativeInput', { static: true }) nativeInput!: ElementRef<HTMLInputElement>;
+
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
   @Input() required: boolean = false;
   @Input() readOnly: boolean = false;
-  
+  @Input() accept: string = '';
+  @Input() multiple: boolean = false;
+
+  @Output() fileChange = new EventEmitter<File[]>();
+  @Output() valueChange = new EventEmitter<any>();
+
   value: any = '';
   disabled: boolean = false;
+
 
   constructor(@Optional() @Self() public ngControl: NgControl) {
     if (this.ngControl) {
@@ -46,8 +54,31 @@ export class InputComponent {
 
   handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
+
+    if (this.type === 'file') {
+      if (!target.files || target.files.length === 0) return;
+
+      const files = Array.from(target.files);
+      
+      const result = this.multiple ? files : [files[0]];
+      
+      this.onChange(result);
+      this.onTouched();
+
+      this.fileChange.emit(result);
+
+      target.value = '';
+      return;
+    }
+
     this.value = target.value;
     this.onChange(this.value);
+
+    this.valueChange.emit(this.value);
+  }
+
+  openFileDialog() {
+    this.nativeInput.nativeElement.click();
   }
 
   // Funções utilitárias

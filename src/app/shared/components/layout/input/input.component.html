@@ -3,14 +3,16 @@
         {{label}}
         @if(required) { <span class="text-red-600">*</span> }
     </label>
-    <input [type]="type" class="border border-gray-300 bg-white rounded-lg p-1 
+    <input #nativeInput [type]="type" class="border border-gray-300 bg-white rounded-lg p-1 
             focus:outline-none focus:ring transition-all
             disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed read-only:bg-gray-100 read-only:text-gray-500 read-only:cursor-not-allowed" 
         [placeholder]="placeholder" 
         [disabled]="disabled" 
         [readOnly]="readOnly"
         [value]="value" 
-        (input)="handleInput($event)"
+        [multiple]="type === 'file' && multiple"
+        [accept]="accept"
+        (change)="handleInput($event)"
         (blur)="onTouched()" />
     @if(invalid){
     <div class="text-sm text-yellow-600 mt-1">

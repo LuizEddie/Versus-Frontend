@@ -1,6 +1,5 @@
 <app-row>
     <app-col>
-        <h1 class="text-3xl">Dados do Torneio</h1>
         <app-tabs>
             <app-tab label="Dados" [active]="true">
                 <app-data [data]="data" (reloadTournament)="getTournamentById()"></app-data>

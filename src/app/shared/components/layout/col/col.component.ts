@@ -7,22 +7,22 @@ import { Component, HostBinding, Input } from '@angular/core';
   standalone: true
 })
 export class ColComponent {
-  @Input() sm: 1 | 2 | 3 | 4 | 6 | 12 | null = 12;
-  @Input() md: 1 | 2 | 3 | 4 | 6 | 12 | null= null;
-  @Input() lg: 1 | 2 | 3 | 4 | 6 | 12 | null= null;
-  @Input() xl: 1 | 2 | 3 | 4 | 6 | 12 | null= null;
-  @Input() xxl: 1 | 2 | 3 | 4 | 6 | 12 | null= null;
+  @Input() sm: 1 | 2 | 3 | 4 | 6 | 12 | "1" | "2" | "3" | "4" | "6" | "12" | null = 12;
+  @Input() md: 1 | 2 | 3 | 4 | 6 | 12 | "1" | "2" | "3" | "4" | "6" | "12" | null= null;
+  @Input() lg: 1 | 2 | 3 | 4 | 6 | 12 | "1" | "2" | "3" | "4" | "6" | "12" | null= null;
+  @Input() xl: 1 | 2 | 3 | 4 | 6 | 12 | "1" | "2" | "3" | "4" | "6" | "12" | null= null;
+  @Input() xxl: 1 | 2 | 3 | 4 | 6 | 12 | "1" | "2" | "3" | "4" | "6" | "12" | null= null;
 
-  private widthMap: Record<number, string> = {
-    1: 'w-1/12',
-    2: 'w-1/6',
-    3: 'w-1/4',
-    4: 'w-1/3',
-    6: 'w-1/2',
-    12: 'w-full'
+  private widthMap: Record<number | string, string> = {
+    "1": 'w-1/12',
+    "2": 'w-1/6',
+    "3": 'w-1/4',
+    "4": 'w-1/3',
+    "6": 'w-1/2',
+    "12": 'w-full'
   }
 
-  convert(value: number): string{
+  convert(value: number | string): string{
     return this.widthMap[value] || 'w-full';
   }
 
