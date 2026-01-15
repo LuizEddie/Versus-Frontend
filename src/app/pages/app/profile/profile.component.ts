@@ -16,13 +16,13 @@ import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-
+  MAX_FILE_SIZE = 3 * 1024 * 1024;
   data: any = {};
   formData!: FormGroup;
   disableForm: boolean = false;
   profileImage: string | null = null;
   selectedFile: File | null = null;
-  defaultImg = 'https://localhost:7142/uploads/profile/default.png';
+  defaultImg = "profile/default.png";
 
   constructor(private profileService: ProfileService, private toast: ToastService, private fb: FormBuilder) {
     this.formData = this.fb.group({
@@ -48,9 +48,14 @@ export class ProfileComponent {
   }
 
   onFileSelected(files: File[]) {
-
+    
     if (files && files.length > 0) {
       const file = files[0];
+
+      if(file.size > this.MAX_FILE_SIZE) {
+        this.toast.error("A imagem deve ter no máximo 3MB");
+        return;
+      }
 
       this.selectedFile = file;
 
@@ -63,6 +68,7 @@ export class ProfileComponent {
   }
 
   updateProfilePicture() {
+
     const toastId = this.toast.show({ message: "Removendo dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
     this.profileService.updateProfilePhoto(this.selectedFile).subscribe({
       next: (response: any) => {
@@ -71,7 +77,6 @@ export class ProfileComponent {
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
       },
       error: (err: any) => {
-        console.log(err);
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
       }
     });
