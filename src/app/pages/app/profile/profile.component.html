@@ -2,25 +2,31 @@
     <app-row>
         <app-col sm="12" class="flex justify-center">
             <img alt="Perfil" class="w-75 h-75 rounded-full border border-gray-300 cursor-pointer"
-                [src]="preview || defaultImg" (click)="fileInput.openFileDialog()"/>
+                [src]="profileImage || defaultImg" (click)="fileInput.openFileDialog()" />
         </app-col>
-        <app-input #fileInput type="file" accept="image/png, image/jpeg, image/jpg" class="hidden" (fileChange)="onFileSelected($event)"></app-input>
+        @if(selectedFile){
+        <app-col sm="12" class="flex justify-center">
+            <app-button (click)="updateProfilePicture()">Atualizar imagem</app-button>
+        </app-col>
+        }
+        <app-input #fileInput type="file" accept="image/png, image/jpeg, image/jpg" class="hidden"
+            (fileChange)="onFileSelected($event)"></app-input>
     </app-row>
     <app-row>
         <app-col sm="12">
             <hr>
         </app-col>
         <app-col sm="12">
-            <form>
+            <form [formGroup]="formData">
                 <app-row>
                     <app-col sm="12">
                         <h1 class="text-2xl mb-2">Dados do Usuário</h1>
                     </app-col>
                     <app-col lg="6">
-                        <app-input label="Email" [readOnly]="true"></app-input>
+                        <app-input label="Email" formControlName="email" [readOnly]="true"></app-input>
                     </app-col>
                     <app-col lg="6">
-                        <app-input label="Nome"></app-input>
+                        <app-input label="Nome" formControlName="name"></app-input>
                     </app-col>
                     <app-col sm="12">
                         <app-button>Salvar Alterações</app-button>

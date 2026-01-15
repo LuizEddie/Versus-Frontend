@@ -1,0 +1,23 @@
+import { Injectable } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProfileService {
+
+  private readonly url = `${environment.url}/Users`;
+
+  constructor(private http: HttpClient) { }
+
+  getUserData(){
+    return this.http.get(`${this.url}/me`);
+  }
+
+  updateProfilePhoto(file: any){
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.patch(`${this.url}/update-profile-picture`, formData);
+  }
+}
