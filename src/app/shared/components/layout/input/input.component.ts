@@ -20,7 +20,7 @@ export class InputComponent {
   @Input() accept: string = '';
   @Input() multiple: boolean = false;
 
-  @Output() fileChange = new EventEmitter<File[]>();
+  @Output() fileChange = new EventEmitter<Event>();
   @Output() valueChange = new EventEmitter<any>();
 
   value: any = '';
@@ -65,9 +65,9 @@ export class InputComponent {
       this.onChange(result);
       this.onTouched();
 
-      this.fileChange.emit(result);
+      this.fileChange.emit(event);
 
-      target.value = '';
+      // target.value = '';
       return;
     }
 

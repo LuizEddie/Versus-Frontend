@@ -1,17 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RowComponent } from "../../../shared/components/layout/row/row.component";
 import { ColComponent } from "../../../shared/components/layout/col/col.component";
 import { InputComponent } from "../../../shared/components/layout/input/input.component";
 import { ButtonComponent } from "../../../shared/components/layout/button/button.component";
 import { ProfileService } from './_services/profile.service';
-import { firstValueFrom } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
-
+import { ImageCroppedEvent, ImageCropperComponent} from 'ngx-image-cropper';
 @Component({
   selector: 'app-profile',
-  imports: [ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent],
+  imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -23,6 +22,10 @@ export class ProfileComponent {
   profileImage: string | null = null;
   selectedFile: File | null = null;
   defaultImg = "profile/default.png";
+
+  //Image Cropper
+  imageChangedEvent: any = '';
+  croppedImage: string | null = null;
 
   constructor(private profileService: ProfileService, private toast: ToastService, private fb: FormBuilder) {
     this.formData = this.fb.group({
@@ -73,6 +76,8 @@ export class ProfileComponent {
     this.profileService.updateProfilePhoto(this.selectedFile).subscribe({
       next: (response: any) => {
         this.selectedFile = null;
+        this.imageChangedEvent = null;
+        this.croppedImage = null;
         this.profileImage = response.data.profileUrl;
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
       },
@@ -80,5 +85,29 @@ export class ProfileComponent {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
       }
     });
+  }
+
+  fileChangeEvent(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if(!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    if(file.size > this.MAX_FILE_SIZE){
+      this.toast.error("A imagem deve ter no máximo 3MB");
+      return;
+    }
+
+    this.imageChangedEvent = event;
+  }
+
+  imageCropped(event: ImageCroppedEvent){
+
+    if(!event.blob) return;
+
+    this.selectedFile = new File([event.blob], 'profile.png', { type: event.blob.type})
+    this.croppedImage = event.base64!;
+
+    this.croppedImage = URL.createObjectURL(event.blob);
   }
 }
