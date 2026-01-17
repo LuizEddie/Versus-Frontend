@@ -1,26 +1,9 @@
 <div class="p-4 bg-white rounded-lg min-h-screen">
     <app-row>
-        @if(imageChangedEvent){
-        <app-col sm="12" class="flex justify-center">
-            <div class="w-[320px] h-[320]">
-                <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1"
-                    [resizeToWidth]="300" output="blob" format="png"
-                    (imageCropped)="imageCropped($event)"></image-cropper>
-            </div>
-        </app-col>
-        }
-        @if(selectedFile){
-        <app-col sm="12" class="flex justify-center">
-            <app-button (click)="updateProfilePicture()">Atualizar imagem</app-button>
-        </app-col>
-        }
-
         <app-col sm="12" class="flex justify-center">
             <img alt="Perfil" class="w-75 h-75 rounded-full border border-gray-300 cursor-pointer"
                 [src]="croppedImage || profileImage || defaultImg" (click)="fileInput.openFileDialog()" />
         </app-col>
-
-
         <app-input #fileInput type="file" accept="image/png, image/jpeg, image/jpg" class="hidden"
             (fileChange)="fileChangeEvent($event)"></app-input>
     </app-row>
@@ -69,5 +52,19 @@
             </app-row>
         </app-col>
     </app-row>
-
+    <swal #cropperSwal title="Ajustar Imagem de Perfil" (didOpen)="onSwalOpen()" [showCancelButton]="true" [showConfirmButton]="true" confirmButtonText="Atualizar Imagem" cancelButtonText="Cancelar">
+        <div *swalPortal="swalTargets.content">
+            <app-row>
+                <app-col sm="12" class="flex justify-center">
+                    <div class="w-[320px] h-[320]">
+                        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+                            [aspectRatio]="1" [resizeToWidth]="300" output="blob" format="png" [roundCropper]="true"
+                            (imageCropped)="imageCropped($event)"></image-cropper>
+                    </div>
+                    <app-input #fileInput type="file" accept="image/png, image/jpeg, image/jpg" class="hidden"
+                        (fileChange)="fileChangeEvent($event)"></app-input>
+                </app-col>
+            </app-row>
+        </div>
+    </swal>
 </div>

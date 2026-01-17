@@ -10,7 +10,7 @@ import { getValidationMessage } from '../../../utils/validation-messages';
   imports: [ReactiveFormsModule]
 })
 export class InputComponent {
-  @ViewChild('nativeInput', { static: true }) nativeInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('nativeInput') nativeInput!: ElementRef<HTMLInputElement>;
 
   @Input() label: string = '';
   @Input() placeholder: string = '';
@@ -25,7 +25,7 @@ export class InputComponent {
 
   value: any = '';
   disabled: boolean = false;
-
+  renderInput: boolean = true;
 
   constructor(@Optional() @Self() public ngControl: NgControl) {
     if (this.ngControl) {
@@ -78,7 +78,12 @@ export class InputComponent {
   }
 
   openFileDialog() {
-    this.nativeInput.nativeElement.click();
+    this.nativeInput?.nativeElement.click();
+  }
+
+  resetFileInput(){
+    this.renderInput = false;
+    setTimeout(() => this.renderInput = true);
   }
 
   // Funções utilitárias
