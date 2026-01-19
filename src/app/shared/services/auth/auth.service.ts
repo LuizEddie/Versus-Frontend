@@ -15,15 +15,15 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  getAcessToken(){
+  getAcessToken() {
     return localStorage.getItem(this.KEY);
   }
 
-  setAccessToken(token: string){
+  setAccessToken(token: string) {
     localStorage.setItem(this.KEY, token);
   }
 
-  removeAccessToken(){
+  removeAccessToken() {
     localStorage.removeItem(this.KEY);
   }
 
@@ -33,26 +33,29 @@ export class AuthService {
     return !token ? false : true
   }
 
-  logout(){
-    this.http.post(`${this.url}/logout`, {}, { withCredentials: true}).subscribe();
-    this.removeAccessToken();
-    this.router.navigate(['/auth/login']);
+  logout() {
+    return this.http.post(`${this.url}/logout`, {}, { withCredentials: true }).pipe(
+      tap(() => {
+        this.removeAccessToken();
+        this.router.navigate(['/auth/login']);
+      })
+    );
   }
 
-  refreshToken(){
-    if(this.refreshInProgress){
+  refreshToken() {
+    if (this.refreshInProgress) {
       return this.refreshSubject.pipe(filter(token => token !== null), take(1), map(token => token as string));
     }
 
     this.refreshInProgress = true;
     this.refreshSubject.next(null);
 
-    return this.http.post(`${this.url}/refresh`, {}, {withCredentials: true})
+    return this.http.post(`${this.url}/refresh`, {}, { withCredentials: true })
       .pipe(
-          tap((res: any) => {
-              const token = res?.data ?? null;
-              this.setAccessToken(token);
-              this.refreshSubject.next(token);
+        tap((res: any) => {
+          const token = res?.data ?? null;
+          this.setAccessToken(token);
+          this.refreshSubject.next(token);
         }),
         map(res => res?.data ?? null),
         catchError((error) => {
@@ -62,7 +65,7 @@ export class AuthService {
         finalize(() => {
           this.refreshInProgress = false;
         })
-    )
+      )
   }
 
 

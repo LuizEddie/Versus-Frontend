@@ -12,7 +12,7 @@
             <hr>
         </app-col>
         <app-col sm="12">
-            <form [formGroup]="formData">
+            <form [formGroup]="formData" (ngSubmit)="handleUpdateUserData()">
                 <app-row>
                     <app-col sm="12">
                         <h1 class="text-2xl mb-2">Dados do Usuário</h1>
@@ -24,7 +24,7 @@
                         <app-input label="Nome" formControlName="name"></app-input>
                     </app-col>
                     <app-col sm="12">
-                        <app-button>Salvar Alterações</app-button>
+                        <app-button type="submit" [disabled]="disableForm">Salvar Alterações</app-button>
                     </app-col>
                 </app-row>
             </form>
@@ -38,21 +38,22 @@
                     <h1 class="text-2xl mb-2">Outras Opções</h1>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="warning">Logout Global</app-button>
+                    <app-button variant="warning" [swal]="globalLogoutSwal">Logout Global</app-button>
                 </app-col>
                 <app-col sm="6" lg="3">
                     <app-button variant="warning">Atualizar Senha</app-button>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="danger">Desativar Conta</app-button>
+                    <app-button variant="danger" [swal]="deactivateAccountSwal">Desativar Conta</app-button>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="danger">Excluir Conta</app-button>
+                    <app-button variant="danger" [swal]="deleteAccountSwal">Excluir Conta</app-button>
                 </app-col>
             </app-row>
         </app-col>
     </app-row>
-    <swal #cropperSwal title="Ajustar Imagem de Perfil" (didOpen)="onSwalOpen()" [showCancelButton]="true" [showConfirmButton]="true" confirmButtonText="Atualizar Imagem" cancelButtonText="Cancelar">
+    <swal #cropperSwal title="Ajustar Imagem de Perfil" (didOpen)="onSwalOpen()" [showCancelButton]="true"
+        [showConfirmButton]="true" confirmButtonText="Atualizar Imagem" cancelButtonText="Cancelar">
         <div *swalPortal="swalTargets.content">
             <app-row>
                 <app-col sm="12" class="flex justify-center">
@@ -67,4 +68,15 @@
             </app-row>
         </div>
     </swal>
+    <swal #deactivateAccountSwal title="Desativar Conta?"
+        text="Esta ação pode ser desfeita caso você clique em esqueci a senha na tela de login! Deseja continuar?"
+        [showCancelButton]="true" cancelButtonText="Não" cancelButtonColor="green" [showConfirmButton]="true"
+        confirmButtonColor="red" confirmButtonText="Sim" [focusCancel]="true" (confirm)="handleDeactivateAccount()">
+    </swal>
+    <swal #deleteAccountSwal title="Excluir Conta?" text="Esta ação não pode ser desfeita! Deseja continuar?"
+        [showCancelButton]="true" cancelButtonText="Não" cancelButtonColor="green" [showConfirmButton]="true"
+        confirmButtonColor="red" confirmButtonText="Sim" [focusCancel]="true" (confirm)="handleDeleteAccount()"></swal>
+    <swal #globalLogoutSwal title="Logout Global" text="Todos os dispositivos serão deslogados! Deseja continuar?"
+        [showCancelButton]="true" cancelButtonText="Não" cancelButtonColor="green" [showConfirmButton]="true"
+        confirmButtonColor="red" confirmButtonText="Sim" [focusCancel]="true" (confirm)="handleGlobalLogout()"></swal>
 </div>

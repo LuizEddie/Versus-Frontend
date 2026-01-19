@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
+import { RouterOutlet, RouterLinkWithHref, Router } from '@angular/router';
 import { LinkComponent } from "../../shared/components/layout/link/link.component";
 import { DropdownComponent } from "../../shared/components/layout/dropdown/dropdown/dropdown.component";
 import { DropdownItemComponent } from "../../shared/components/layout/dropdown/dropdown-item/dropdown-item.component";
 import { SwalComponent, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
 import { AuthService } from '../../shared/services/auth/auth.service';
+import { handleErrorMessages } from '../../shared/utils/api-error-messages';
 
 @Component({
   selector: 'app-app-layout',
@@ -14,11 +15,16 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 })
 export class AppLayoutComponent {
 
-  constructor(private authService: AuthService){
+  constructor(private authService: AuthService, private router: Router){
 
   }
 
   logout(){
-    this.authService.logout();
+    return this.authService.logout().subscribe({
+      error: (err: any) => {
+        this.authService.removeAccessToken();
+        this.router.navigate(['/auth/login']);
+      }
+    });
   }
 }

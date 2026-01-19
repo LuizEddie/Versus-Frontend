@@ -15,9 +15,13 @@ export class ProfileService {
     return this.http.get(`${this.url}/me`);
   }
 
+  updateUserData(params: any){
+    return this.http.patch(`${this.url}/me/update-user-data`, params);
+  }
+
   updateProfilePhoto(file: any){
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.patch(`${this.url}/update-profile-picture`, formData);
+    return this.http.patch(`${this.url}/me/update-profile-picture`, formData);
   }
 }

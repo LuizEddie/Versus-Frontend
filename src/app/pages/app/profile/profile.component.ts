@@ -8,10 +8,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
-import { SwalComponent, SwalPortalTargets, SwalPortalDirective } from "@sweetalert2/ngx-sweetalert2";
+import { SwalComponent, SwalPortalTargets, SwalPortalDirective, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { catchError, switchMap, throwError } from 'rxjs';
 @Component({
   selector: 'app-profile',
-  imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective],
+  imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective, SwalDirective],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
   standalone: true
@@ -33,7 +35,7 @@ export class ProfileComponent {
   imageChangedEvent: any = '';
   croppedImage: string | null = null;
 
-  constructor(private profileService: ProfileService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
+  constructor(private profileService: ProfileService, private authService: AuthService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       email: [{ value: '', disabled: true }]
@@ -45,17 +47,80 @@ export class ProfileComponent {
   }
 
   getProfileData() {
+    const toastId = this.toast.show({ message: "Carregando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+
     this.profileService.getUserData().subscribe({
       next: (response: any) => {
         this.data = response.data;
         this.formData.get('name')?.setValue(this.data.name);
         this.formData.get('email')?.setValue(this.data.email);
         this.profileImage = this.data.photoPath;
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
       },
-      error: (err: any) => this.toast.warning(handleErrorMessages(err))
+      error: (err: any) => this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })
     });
   }
 
+  handleUpdateUserData() {
+    if (!this.formData.valid) {
+      this.toast.warning("Por favor, preencha os campos corretamente!");
+      return;
+    }
+
+    this.disableForm = true;
+    const toastId = this.toast.show({ message: "Atualizando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+
+    this.profileService.updateUserData(this.formData.value).subscribe({
+      next: (response: any) => {
+        this.disableForm = false;
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
+      },
+      error: (err: any) => { 
+        this.disableForm = false;
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+      }
+    })
+  }
+
+  handleDeactivateAccount(){
+    const toastId = this.toast.show({ message: "Desativando conta, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+    
+    this.profileService.updateUserData({isActive: false}).pipe(
+      switchMap(() => this.authService.logout()),
+      catchError(err => {
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (response: any) => {
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+      }
+    })
+  }
+
+  handleDeleteAccount(){
+    const toastId = this.toast.show({ message: "Excluindo conta, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+    
+    this.profileService.updateUserData({isDeleted: true}).pipe(
+      switchMap(() => this.authService.logout()),
+      catchError(err => {
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (response: any) => {
+        this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+      }
+    })
+  }
+
+  handleGlobalLogout(){
+    
+  }
   //Update Profile Photo
   onFileSelected(files: File[]) {
 

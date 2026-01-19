@@ -22,7 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authRequest).pipe(
     catchError((error: HttpErrorResponse) => {
       if(error.status === 0){
-        authService.logout();
+        authService.logout().subscribe();
         return throwError(() => error);
       }
 
@@ -36,11 +36,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               });
               return next(newRequest);
             }
-            authService.logout();
+            authService.logout().subscribe();
             return throwError(() => error);
           }),
           catchError((err) => {
-            authService.logout();
+            authService.logout().subscribe();
             return throwError(() => err);
           })
         );
