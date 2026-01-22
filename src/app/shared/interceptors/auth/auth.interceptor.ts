@@ -12,35 +12,47 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     '/Auth/logout'
   ];
 
-  if(excludeUrl.some(url => req.url.includes(url))){
+  if (excludeUrl.some(url => req.url.includes(url))) {
     return next(req);
   }
 
   const token = authService.getAcessToken();
 
-  const authRequest = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}`}}) : req;
+  const authRequest = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
   return next(authRequest).pipe(
     catchError((error: HttpErrorResponse) => {
-      if(error.status === 0){
-        authService.logout().subscribe();
+      if (error.status === 0) {
+        authService.logout().subscribe({
+          error: () => {
+            authService.removeAccessToken();
+          }
+        });
         return throwError(() => error);
       }
 
-      if(error.status === 401){
+      if (error.status === 401) {
         return authService.refreshToken().pipe(
           // tap(t => console.log('🟢 refreshToken emitiu:', t)),
           switchMap((newToken) => {
-            if(newToken){
+            if (newToken) {
               const newRequest = req.clone({
-                setHeaders: { Authorization: `Bearer ${newToken}`}
+                setHeaders: { Authorization: `Bearer ${newToken}` }
               });
               return next(newRequest);
             }
-            authService.logout().subscribe();
+            authService.logout().subscribe({
+              error: () => {
+                authService.removeAccessToken();
+              }
+            });
             return throwError(() => error);
           }),
           catchError((err) => {
-            authService.logout().subscribe();
+            authService.logout().subscribe({
+              error: () => {
+                authService.removeAccessToken();
+              }
+            });
             return throwError(() => err);
           })
         );

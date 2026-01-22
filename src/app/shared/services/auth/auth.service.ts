@@ -25,6 +25,7 @@ export class AuthService {
 
   removeAccessToken() {
     localStorage.removeItem(this.KEY);
+    this.router.navigate(['/auth/login']);
   }
 
   isLoggedIn(): boolean {
@@ -37,7 +38,14 @@ export class AuthService {
     return this.http.post(`${this.url}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
         this.removeAccessToken();
-        this.router.navigate(['/auth/login']);
+      })
+    );
+  }
+
+  globalLogout() {
+    return this.http.post(`${this.url}/global-logout`, {}, { withCredentials: true }).pipe(
+      tap(() => {
+        this.removeAccessToken();
       })
     );
   }

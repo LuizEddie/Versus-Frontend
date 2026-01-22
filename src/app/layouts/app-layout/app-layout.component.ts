@@ -23,7 +23,6 @@ export class AppLayoutComponent {
     return this.authService.logout().subscribe({
       error: (err: any) => {
         this.authService.removeAccessToken();
-        this.router.navigate(['/auth/login']);
       }
     });
   }

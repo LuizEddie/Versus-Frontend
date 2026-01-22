@@ -11,6 +11,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { SwalComponent, SwalPortalTargets, SwalPortalDirective, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective, SwalDirective],
@@ -35,7 +36,7 @@ export class ProfileComponent {
   imageChangedEvent: any = '';
   croppedImage: string | null = null;
 
-  constructor(private profileService: ProfileService, private authService: AuthService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
+  constructor(private router: Router, private profileService: ProfileService, private authService: AuthService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       email: [{ value: '', disabled: true }]
@@ -75,17 +76,17 @@ export class ProfileComponent {
         this.disableForm = false;
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
       },
-      error: (err: any) => { 
+      error: (err: any) => {
         this.disableForm = false;
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
       }
     })
   }
 
-  handleDeactivateAccount(){
+  handleDeactivateAccount() {
     const toastId = this.toast.show({ message: "Desativando conta, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
-    
-    this.profileService.updateUserData({isActive: false}).pipe(
+
+    this.profileService.updateUserData({ isActive: false }).pipe(
       switchMap(() => this.authService.logout()),
       catchError(err => {
         return throwError(() => err);
@@ -100,10 +101,10 @@ export class ProfileComponent {
     })
   }
 
-  handleDeleteAccount(){
+  handleDeleteAccount() {
     const toastId = this.toast.show({ message: "Excluindo conta, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
-    
-    this.profileService.updateUserData({isDeleted: true}).pipe(
+
+    this.profileService.updateUserData({ isDeleted: true }).pipe(
       switchMap(() => this.authService.logout()),
       catchError(err => {
         return throwError(() => err);
@@ -118,9 +119,14 @@ export class ProfileComponent {
     })
   }
 
-  handleGlobalLogout(){
-    
+  handleGlobalLogout() {
+    return this.authService.globalLogout().subscribe({
+      error: (err: any) => {
+        this.authService.removeAccessToken();
+      }
+    });
   }
+
   //Update Profile Photo
   onFileSelected(files: File[]) {
 
