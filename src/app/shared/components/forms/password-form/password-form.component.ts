@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { InputGroupComponent } from "../../../../shared/components/layout/input-group/input-group.component";
+import { InputGroupComponent } from "../../layout/input-group/input-group.component";
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 @Component({

@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 export class ProfileService {
 
   private readonly url = `${environment.url}/Users`;
+  private readonly passwordUrl = `${environment.url}/ResetPasswords`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,5 +24,9 @@ export class ProfileService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.patch(`${this.url}/me/update-profile-picture`, formData);
+  }
+
+  updatePassword(params: any){  
+    return this.http.patch(`${this.passwordUrl}/me/update-password`, params);
   }
 }

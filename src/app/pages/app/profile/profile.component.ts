@@ -12,15 +12,17 @@ import { SwalComponent, SwalPortalTargets, SwalPortalDirective, SwalDirective } 
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { PasswordFormComponent } from "../../../shared/components/forms/password-form/password-form.component";
 @Component({
   selector: 'app-profile',
-  imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective, SwalDirective],
+  imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective, SwalDirective, PasswordFormComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
   standalone: true
 })
 export class ProfileComponent {
   @ViewChild('cropperSwal') swal!: SwalComponent;
+  @ViewChild('newPasswordSwal') newPasswordSwal!: SwalComponent;
   @ViewChild('fileInput') fileInput!: InputComponent;
 
   MAX_FILE_SIZE = 3 * 1024 * 1024;
@@ -36,11 +38,13 @@ export class ProfileComponent {
   imageChangedEvent: any = '';
   croppedImage: string | null = null;
 
+  //Update Password
+
   constructor(private router: Router, private profileService: ProfileService, private authService: AuthService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       email: [{ value: '', disabled: true }]
-    })
+    });
   }
 
   ngOnInit() {
@@ -86,6 +90,8 @@ export class ProfileComponent {
   handleDeactivateAccount() {
     const toastId = this.toast.show({ message: "Desativando conta, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
 
+    this.disableForm = true;
+
     this.profileService.updateUserData({ isActive: false }).pipe(
       switchMap(() => this.authService.logout()),
       catchError(err => {
@@ -97,13 +103,16 @@ export class ProfileComponent {
       },
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+        this.disableForm = false;
       }
     })
   }
 
   handleDeleteAccount() {
     const toastId = this.toast.show({ message: "Excluindo conta, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
-
+    
+    this.disableForm = true;
+    
     this.profileService.updateUserData({ isDeleted: true }).pipe(
       switchMap(() => this.authService.logout()),
       catchError(err => {
@@ -115,6 +124,7 @@ export class ProfileComponent {
       },
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
+        this.disableForm = false;
       }
     })
   }
@@ -145,6 +155,7 @@ export class ProfileComponent {
   updateProfilePicture() {
 
     const toastId = this.toast.show({ message: "Atualizando dados, aguarde...", type: "loading", duration: 0, persistent: true, closeable: false });
+    
     this.profileService.updateProfilePhoto(this.selectedFile).subscribe({
       next: (response: any) => {
         this.selectedFile = null;
@@ -206,5 +217,43 @@ export class ProfileComponent {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 50);
+  }
+
+  openFileDialog(){
+    if(this.disableForm) return;
+    
+    this.fileInput.openFileDialog();
+  }
+
+  //Update Password
+  handleUpdatePassword(form: FormGroup){
+    if(!form.valid){
+      this.toast.warning('Por favor, preencha os campos corretamente');
+      return;
+    }
+    
+    this.disableForm = true;
+
+    const toastId = this.toast.show({ message: 'Confirmando sua nova senha, aguarde...', type: 'loading', duration: 0, persistent: true, closeable: false});
+
+    this.profileService.updatePassword(form.value).subscribe({
+      next: (response: any) => {
+        form.reset();
+        this.toast.finishToast(toastId, { message: `${response.message} Dentro de alguns segundos você será redirecionado ao login.`, type: 'success', duration: 5000, closeable: true, persistent: false});
+        this.closeUpdatePassword();
+        setTimeout(()=>{
+          this.disableForm = false;
+          this.authService.removeAccessToken();
+        }, 5000);
+      },
+      error: (err: any) => {
+        this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000,  closeable: true, persistent: false});
+        this.disableForm = false;
+      }
+    })
+  }
+
+  closeUpdatePassword(){
+    this.newPasswordSwal.close();
   }
 }

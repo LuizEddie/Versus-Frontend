@@ -2,7 +2,7 @@
     <app-row>
         <app-col sm="12" class="flex justify-center">
             <img alt="Perfil" class="w-75 h-75 rounded-full border border-gray-300 cursor-pointer"
-                [src]="profileImage || defaultImg" (click)="fileInput.openFileDialog()" />
+                [src]="profileImage || defaultImg" (click)="openFileDialog()"/>
         </app-col>
         <app-input #fileInput type="file" accept="image/png, image/jpeg, image/jpg" class="hidden"
             (fileChange)="fileChangeEvent($event)"></app-input>
@@ -38,16 +38,16 @@
                     <h1 class="text-2xl mb-2">Outras Opções</h1>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="warning" [swal]="globalLogoutSwal">Logout Global</app-button>
+                    <app-button variant="warning" [swal]="globalLogoutSwal" [disabled]="disableForm">Logout Global</app-button>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="warning">Atualizar Senha</app-button>
+                    <app-button variant="warning" [swal]="newPasswordSwal" [disabled]="disableForm">Atualizar Senha</app-button>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="danger" [swal]="deactivateAccountSwal">Desativar Conta</app-button>
+                    <app-button variant="danger" [swal]="deactivateAccountSwal" [disabled]="disableForm">Desativar Conta</app-button>
                 </app-col>
                 <app-col sm="6" lg="3">
-                    <app-button variant="danger" [swal]="deleteAccountSwal">Excluir Conta</app-button>
+                    <app-button variant="danger" [swal]="deleteAccountSwal" [disabled]="disableForm">Excluir Conta</app-button>
                 </app-col>
             </app-row>
         </app-col>
@@ -66,6 +66,15 @@
                         (fileChange)="fileChangeEvent($event)"></app-input>
                 </app-col>
             </app-row>
+        </div>
+    </swal>
+    <swal #newPasswordSwal title="Definir Nova Senha" [showCancelButton]="false" [showConfirmButton]="false"
+        confirmButtonText="Alterar Senha" cancelButtonText="Cancelar">
+        <div *swalPortal="swalTargets.content">
+            <app-password-form (formSubmit)="handleUpdatePassword($event)">
+                <app-button type="submit" variant="success" [disabled]="disableForm">Atualizar Senha</app-button>
+                <app-button variant="danger" class="ml-2" (click)="closeUpdatePassword()">Cancelar</app-button>
+            </app-password-form>
         </div>
     </swal>
     <swal #deactivateAccountSwal title="Desativar Conta?"
