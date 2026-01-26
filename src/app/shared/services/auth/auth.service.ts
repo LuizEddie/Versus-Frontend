@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, filter, finalize, map, of, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, finalize, firstValueFrom, map, of, take, tap, throwError } from 'rxjs';
+import { UserStore } from '../../stores/user-store/user-store';
+import { User } from '../../models/user.models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +12,11 @@ import { BehaviorSubject, catchError, filter, finalize, map, of, take, tap, thro
 export class AuthService {
   private readonly KEY = "token"
   private readonly url = `${environment.url}/Auth`;
+  private readonly userUrl = `${environment.url}/Users`;
   private refreshInProgress = false;
   private refreshSubject = new BehaviorSubject<string | null>(null);
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private userStore: UserStore) { }
 
   getAcessToken() {
     return localStorage.getItem(this.KEY);
@@ -32,6 +35,18 @@ export class AuthService {
     const token = this.getAcessToken();
 
     return !token ? false : true
+  }
+
+  async loadUser(): Promise<void>{
+    try{
+      const user = await firstValueFrom(
+        this.http.get<User>(`${this.userUrl}/me`, { withCredentials: true})
+      );
+
+      this.userStore.setUser(user);
+    }catch{
+      this.userStore.reset();
+    }
   }
 
   logout() {
