@@ -4,7 +4,6 @@ import { ColComponent } from "../../../../../shared/components/layout/col/col.co
 import { InputComponent } from "../../../../../shared/components/layout/input/input.component";
 import { WinConditionSelectComponent } from "../../../_components/win-condition-select/win-condition-select.component";
 import { TypeSelectComponent } from "../../../_components/type-select/type-select.component";
-import { TieBreakerSelectComponent } from "../../../_components/tie-breaker-select/tie-breaker-select.component";
 import { ButtonComponent } from "../../../../../shared/components/layout/button/button.component";
 import { TournamentDataService } from '../../_services/tournament-data.service';
 import { Router } from '@angular/router';
@@ -16,7 +15,7 @@ import { concatMap, from, of, toArray } from 'rxjs';
 
 @Component({
   selector: 'app-data',
-  imports: [ReactiveFormsModule, RowComponent, ColComponent, InputComponent, WinConditionSelectComponent, TypeSelectComponent, TieBreakerSelectComponent, ButtonComponent],
+  imports: [ReactiveFormsModule, RowComponent, ColComponent, InputComponent, WinConditionSelectComponent, TypeSelectComponent, ButtonComponent],
   templateUrl: './data.component.html',
   styleUrl: './data.component.css',
   standalone: true
@@ -33,15 +32,8 @@ export class DataComponent {
       name: ['', [Validators.required]],
       players: this.fb.array([]),
       tournamentSpec: this.fb.group({
-        pointsPerWin: ['', [Validators.pattern(/^[0-9]+$/)]],
-        pointsPerDraw: ['', [Validators.pattern(/^[0-9]+$/)]],
-        pointsPerLose: ['', [Validators.pattern(/^[0-9]+$/)]],
-        qtyRounds: ['', [Validators.pattern(/^[0-9]+$/)]],
-        qtyGroups: ['', [Validators.pattern(/^[0-9]+$/)]],
         winConditionId: ['', [Validators.required]],
         typeId: [{ value: '', disabled: true }],
-        tieBreakerId: [''],
-        matchDuration: ['']
       })
     });
   }
@@ -58,23 +50,12 @@ export class DataComponent {
     this.formData.get('tournamentSpec.typeId')?.valueChanges.subscribe(type => {
       const spec = this.formData.get('tournamentSpec') as FormGroup;
 
-      if (type === 2) {
-        spec.get("pointsPerWin")?.addValidators(Validators.required);
-        spec.get("pointsPerDraw")?.addValidators(Validators.required);
-        spec.get("pointsPerLose")?.addValidators(Validators.required);
-        spec.get("qtyRounds")?.addValidators(Validators.required);
-        spec.get("qtyGroups")?.addValidators(Validators.required);
-        spec.get("matchDuration")?.addValidators(Validators.required);
-        spec.get('tieBreakerId')?.addValidators(Validators.required);
+     if (type === 1) {
+        spec.get("winConditionId")?.addValidators(Validators.required);
       } else {
-        spec.get("pointsPerWin")?.clearValidators();
-        spec.get("pointsPerDraw")?.clearValidators();
-        spec.get("pointsPerLose")?.clearValidators();
-        spec.get("qtyRounds")?.clearValidators();
-        spec.get("qtyGroups")?.clearValidators();
-        spec.get("matchDuration")?.clearValidators();
-        spec.get('tieBreakerId')?.clearValidators();
+        spec.get("winConditionId")?.clearValidators();
       }
+
 
       spec.updateValueAndValidity();
     });
@@ -105,17 +86,10 @@ export class DataComponent {
     }
 
     this.formData.get('name')?.setValue(data.name);
-    this.formData.get('tournamentSpec.winConditionId')?.setValue(data.tournamentSpecs.winCondition.id);
     this.formData.get('tournamentSpec.typeId')?.setValue(data.tournamentSpecs.type.id);
 
-    if (data.tournamentSpecs.type.id === 2) {
-      this.formData.get('tournamentSpec.tieBreakerId')?.setValue(data.tournamentSpecs.tieBreaker.id);
-      this.formData.get('tournamentSpec.pointsPerWin')?.setValue(data.tournamentSpecs.pointsPerWin);
-      this.formData.get('tournamentSpec.pointsPerDraw')?.setValue(data.tournamentSpecs.pointsPerDraw);
-      this.formData.get('tournamentSpec.pointsPerLose')?.setValue(data.tournamentSpecs.pointsPerLose);
-      this.formData.get('tournamentSpec.qtyRounds')?.setValue(data.tournamentSpecs.qtyRounds);
-      this.formData.get('tournamentSpec.qtyGroups')?.setValue(data.tournamentSpecs.qtyGroups);
-      this.formData.get('tournamentSpec.matchDuration')?.setValue(data.tournamentSpecs.matchDuration);
+    if(data.tournamentSpecs.type.id === 1){
+      this.formData.get('tournamentSpec.winConditionId')?.setValue(data.tournamentSpecs.winCondition.id);
     }
 
     let players = data.playerDetails || [];
@@ -189,14 +163,7 @@ export class DataComponent {
     const tournamentSpecsPayload = {
       ...tournamentSpec,
       winConditionId: Number(tournamentSpec.winConditionId),
-      typeId: Number(tournamentSpec.typeId),
-      tieBreakerId: tournamentSpec.tieBreakerId ? Number(tournamentSpec.tieBreakerId) : null,
-      pointsPerWin: tournamentSpec.pointsPerWin === '' ? null : Number(tournamentSpec.pointsPerWin),
-      pointsPerDraw: tournamentSpec.pointsPerDraw === '' ? null : Number(tournamentSpec.pointsPerDraw),
-      pointsPerLose: tournamentSpec.pointsPerLose === '' ? null : Number(tournamentSpec.pointsPerLose),
-      qtyRounds: tournamentSpec.qtyRounds === '' ? null : Number(tournamentSpec.qtyRounds),
-      qtyGroups: tournamentSpec.qtyGroups === '' ? null : Number(tournamentSpec.qtyGroups),
-      matchDuration: tournamentSpec.matchDuration || null
+      typeId: Number(tournamentSpec.typeId)
     }
 
     this.tournamentDataServices.updateTournament(this.data.id, tournamentPayload).pipe(

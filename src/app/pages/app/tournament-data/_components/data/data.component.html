@@ -23,44 +23,11 @@
             <div formGroupName="tournamentSpec">
                 <app-row>
                     <app-col [sm]="6" [md]="4">
-                        <app-win-condition-select [required]="true"
-                            formControlName="winConditionId"></app-win-condition-select>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
                         <app-type-select [required]="true" formControlName="typeId"></app-type-select>
                     </app-col>
                     <app-col [sm]="6" [md]="4">
-                        <app-tie-breaker-select [required]="true" formControlName="tieBreakerId"
-                            [hidden]="typeId !== 2"></app-tie-breaker-select>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
-                        <app-input label="Duração da Partida" type="time" placeholder="Digite a duração da partida"
-                            [required]="true" formControlName="matchDuration" [hidden]="typeId !== 2"></app-input>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
-                        <app-input label="Pontos por vitória" type="number"
-                            placeholder="Digite a quantidade de pontos após vitória" [required]="true"
-                            formControlName="pointsPerWin" [hidden]="typeId !== 2"></app-input>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
-                        <app-input label="Pontos por empate" type="number"
-                            placeholder="Digite a quantidade de pontos após empate" [required]="true"
-                            formControlName="pointsPerDraw" [hidden]="typeId !== 2"></app-input>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
-                        <app-input label="Pontos por derrota" type="number"
-                            placeholder="Digite a quantidade de pontos após derrota" [required]="true"
-                            formControlName="pointsPerLose" [hidden]="typeId !== 2"></app-input>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
-                        <app-input label="Quantidade de Rounds" type="number"
-                            placeholder="Digite a quantidade de rounds para definição do primeiro lugar"
-                            [required]="true" formControlName="qtyRounds" [hidden]="typeId !== 2"></app-input>
-                    </app-col>
-                    <app-col [sm]="6" [md]="4">
-                        <app-input label="Quantidade de Grupos" type="number"
-                            placeholder="Digite a quantidade de grupos" [required]="true" formControlName="qtyGroups"
-                            [hidden]="typeId !== 2"></app-input>
+                        <app-win-condition-select [required]="true"
+                            formControlName="winConditionId" [hidden]="typeId !== 1"></app-win-condition-select>
                     </app-col>
                 </app-row>
             </div>

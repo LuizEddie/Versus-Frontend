@@ -80,7 +80,6 @@ export class KnockoutComponent {
 
     const findParams = {
       key: +match.key % 2 === 0 ? +match.key / 2 : (+match.key + 1) / 2,
-      group: match.group,
       tournamentId: this.data.id,
       round: round
     }

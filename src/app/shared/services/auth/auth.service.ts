@@ -47,7 +47,13 @@ export class AuthService {
       const userData = user.data;
 
       this.userStore.setUser(userData);
-    }catch{
+    }catch (errors: any){
+
+      if(errors?.status === 401 || errors?.status === 403){
+        this.userStore.reset();
+        return;
+      }
+
       this.userStore.reset();
     }
   }

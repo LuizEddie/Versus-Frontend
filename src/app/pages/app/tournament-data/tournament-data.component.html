@@ -4,11 +4,6 @@
             <app-tab label="Dados" [active]="true">
                 <app-data [data]="data" (reloadTournament)="getTournamentById()"></app-data>
             </app-tab>
-            @if(data.tournamentSpecs?.type?.id === 2 && data.tournamentStatus?.id !== 1){
-            <app-tab label="Pontos">
-                Pontos
-            </app-tab>
-            }
             @if(data.tournamentSpecs?.type?.id === 1 && data.tournamentStatus?.id !== 1){
             <app-tab label="Chaves">
                 <app-knockout [data]="data" (reloadTournament)="getTournamentById()"></app-knockout>
