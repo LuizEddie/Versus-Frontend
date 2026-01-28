@@ -1,4 +1,4 @@
-import { Component, input, ViewChild } from '@angular/core';
+import { Component, inject, input, ViewChild } from '@angular/core';
 import { RowComponent } from "../../../shared/components/layout/row/row.component";
 import { ColComponent } from "../../../shared/components/layout/col/col.component";
 import { InputComponent } from "../../../shared/components/layout/input/input.component";
@@ -11,8 +11,8 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { SwalComponent, SwalPortalTargets, SwalPortalDirective, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { Router } from '@angular/router';
 import { PasswordFormComponent } from "../../../shared/components/forms/password-form/password-form.component";
+import { UserStore } from '../../../shared/stores/user-store/user-store';
 @Component({
   selector: 'app-profile',
   imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective, SwalDirective, PasswordFormComponent],
@@ -38,9 +38,10 @@ export class ProfileComponent {
   imageChangedEvent: any = '';
   croppedImage: string | null = null;
 
-  //Update Password
+  //User Store
+  store = inject(UserStore);
 
-  constructor(private router: Router, private profileService: ProfileService, private authService: AuthService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
+  constructor(private profileService: ProfileService, private authService: AuthService, private toast: ToastService, private fb: FormBuilder, public readonly swalTargets: SwalPortalTargets) {
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       email: [{ value: '', disabled: true }]
@@ -163,6 +164,7 @@ export class ProfileComponent {
         this.croppedImage = null;
         this.profileImage = response.data.profileUrl;
         this.fileInput.resetFileInput();
+        this.store.updateUser({photoPath: response.data.profileUrl});
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false });
       },
       error: (err: any) => {

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, filter, finalize, firstValueFrom, map, of, take, tap, throwError } from 'rxjs';
 import { UserStore } from '../../stores/user-store/user-store';
 import { User } from '../../models/user.models';
+import { ApiResponse } from '../../dtos/api-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -40,10 +41,12 @@ export class AuthService {
   async loadUser(): Promise<void>{
     try{
       const user = await firstValueFrom(
-        this.http.get<User>(`${this.userUrl}/me`, { withCredentials: true})
+        this.http.get<ApiResponse<User>>(`${this.userUrl}/me`, { withCredentials: true})
       );
 
-      this.userStore.setUser(user);
+      const userData = user.data;
+
+      this.userStore.setUser(userData);
     }catch{
       this.userStore.reset();
     }

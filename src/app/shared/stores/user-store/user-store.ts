@@ -18,6 +18,10 @@ export class UserStore {
     this._initialized.set(true);
   }
 
+  updateUser(partial: Partial<User>){
+    this._user.update(user => user ? {...user, ...partial} : user);
+  }
+
   reset(){
     this._user.set(null);
     this._initialized.set(true);

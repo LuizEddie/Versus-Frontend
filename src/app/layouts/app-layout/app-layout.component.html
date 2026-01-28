@@ -33,8 +33,7 @@
 
 <ng-template #profileDropdown>
     <li>
-        <img alt="Perfil" class="w-10 h-10 rounded-full"
-            src="https://wallpapers.com/images/featured/naruto-hd-p23c4c3xyjkcnp6r.jpg" />
+        <img alt="Perfil" class="w-10 h-10 rounded-full" [src]="store.user()?.photoPath || 'profile/default.png'" />
     </li>
 </ng-template>
 
