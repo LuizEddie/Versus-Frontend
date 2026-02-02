@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AuthService } from '../../shared/services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -11,7 +11,9 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 })
 export class AuthLayoutComponent {
 
-  constructor(private authService: AuthService){
-    // this.authService.removeAccessToken();
+  private authService = inject(AuthService);
+
+  ngOnInit(){
+    this.authService.logout().subscribe();
   }
 }
