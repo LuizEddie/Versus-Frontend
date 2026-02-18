@@ -32,6 +32,10 @@ export class AuthService {
     this.router.navigate(['/auth/login']);
   }
 
+  removeToken(){
+    localStorage.removeItem(this.KEY);
+  }
+
   isLoggedIn(): boolean {
     const token = this.getAcessToken();
 
@@ -48,7 +52,6 @@ export class AuthService {
 
       this.userStore.setUser(userData);
     }catch (errors: any){
-
       if(errors?.status === 401 || errors?.status === 403){
         this.userStore.reset();
         return;

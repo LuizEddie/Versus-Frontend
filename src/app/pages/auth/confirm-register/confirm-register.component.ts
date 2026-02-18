@@ -6,10 +6,11 @@ import { ResetPasswordService } from '../_services/reset-password.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { LinkComponent } from "../../../shared/components/layout/link/link.component";
 
 @Component({
   selector: 'app-confirm-register',
-  imports: [PasswordFormComponent, ButtonComponent],
+  imports: [PasswordFormComponent, ButtonComponent, LinkComponent],
   templateUrl: './confirm-register.component.html',
   styleUrl: './confirm-register.component.css',
   standalone: true
@@ -17,8 +18,10 @@ import { ToastService } from '../../../shared/services/toast/toast.service';
 export class ConfirmRegisterComponent {
   token: string | null = null;
   disableForm: boolean = false;
+  showGoToLogin: boolean = false;
   constructor(private resetPasswordService: ResetPasswordService, private router: Router, private route: ActivatedRoute, private toast: ToastService){
     this.disableForm = false;
+    this.showGoToLogin = false;
   }
 
   ngOnInit(){
@@ -56,6 +59,7 @@ export class ConfirmRegisterComponent {
       error: (err: any) => {
         this.toast.finishToast(toastId, {message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false});
         this.disableForm = false;
+        this.showGoToLogin = true;
       }
     });
   }

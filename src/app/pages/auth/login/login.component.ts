@@ -45,7 +45,6 @@ export class LoginComponent {
 
     try {
       const response: any = await firstValueFrom(this.loginService.login(this.formData.value));
-
       this.authService.setAccessToken(response.data);
       this.formData.reset();
       this.disableForm = false;
@@ -56,21 +55,6 @@ export class LoginComponent {
       this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
       this.disableForm = false;
     }
-
-    // this.loginService.login(this.formData.value).subscribe({
-    //   next: (response: any) => {
-    //     this.authService.setAccessToken(response.data);
-    //     this.authService.loadUser();
-    //     this.router.navigate(['/home']);
-    //     this.formData.reset();
-    //     this.toast.finishToast(toastId, { message: response.message, type: 'success', duration: 500, closeable: true, persistent: false });
-    //     this.disableForm = false;
-    //   },
-    //   error: (err: any) => {
-    //     this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false });
-    //     this.disableForm = false;
-    //   }
-    // })
   }
 
 }

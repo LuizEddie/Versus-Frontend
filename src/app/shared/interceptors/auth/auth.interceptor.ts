@@ -9,14 +9,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const excludeUrl = [
     '/Auth/login',
     '/Auth/refresh',
-    '/Auth/logout'
+    '/Auth/logout',
+    // '/Users/me'
   ];
+
+  const token = authService.getAcessToken();
+
+  if(!token) excludeUrl.push('/Users/me');
 
   if (excludeUrl.some(url => req.url.includes(url))) {
     return next(req);
   }
 
-  const token = authService.getAcessToken();
 
   const authRequest = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
   return next(authRequest).pipe(

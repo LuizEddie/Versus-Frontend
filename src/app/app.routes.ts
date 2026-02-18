@@ -75,11 +75,11 @@ export const routes: Routes = [
                         pathMatch: 'full'
                     }
                 ]
-            },
-            {
-                path: '**',
-                component: NotFoundComponent
             }
         ]
+    },
+    {
+        path: '**',
+        component: NotFoundComponent
     }
 ];

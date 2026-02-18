@@ -6,10 +6,11 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
+import { LinkComponent } from "../../../shared/components/layout/link/link.component";
 
 @Component({
   selector: 'app-confirm-new-password',
-  imports: [PasswordFormComponent, ButtonComponent],
+  imports: [PasswordFormComponent, ButtonComponent, LinkComponent],
   templateUrl: './confirm-new-password.component.html',
   styleUrl: './confirm-new-password.component.css',
   standalone: true
@@ -17,9 +18,10 @@ import { handleErrorMessages } from '../../../shared/utils/api-error-messages';
 export class ConfirmNewPasswordComponent {
   token: string | null = null;
   disableForm: boolean = false;
-
+  showGoToLogin: boolean = false;
   constructor(private resetPasswordService: ResetPasswordService, private router: Router, private route: ActivatedRoute, private toast: ToastService){
     this.disableForm = false;
+    this.showGoToLogin = false;
   }
 
   ngOnInit(){
@@ -57,6 +59,7 @@ export class ConfirmNewPasswordComponent {
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false});
         this.disableForm = false;
+        this.showGoToLogin = true;
       }
     });
   }

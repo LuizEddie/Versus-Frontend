@@ -14,6 +14,6 @@ export class AuthLayoutComponent {
   private authService = inject(AuthService);
 
   ngOnInit(){
-    this.authService.logout().subscribe();
+    this.authService.removeToken();
   }
 }
