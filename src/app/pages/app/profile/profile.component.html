@@ -2,7 +2,7 @@
     <app-row>
         <app-col sm="12" class="flex justify-center">
             <img alt="Perfil" class="w-75 h-75 rounded-full border border-gray-300 cursor-pointer"
-                [src]="profileImage || defaultImg" (click)="openFileDialog()"/>
+                [src]="profileImage || defaultImg" (click)="openFileDialog()" (error)="onImageError($event)"/>
         </app-col>
         <app-input #fileInput type="file" accept="image/png, image/jpeg, image/jpg" class="hidden"
             (fileChange)="fileChangeEvent($event)"></app-input>

@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    url: 'https://localhost:7142/api'
+    url: 'https://apiversus.servehttp.com/api'
 }

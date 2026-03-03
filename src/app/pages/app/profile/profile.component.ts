@@ -13,6 +13,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { PasswordFormComponent } from "../../../shared/components/forms/password-form/password-form.component";
 import { UserStore } from '../../../shared/stores/user-store/user-store';
+import { onImageError } from '../../../shared/utils/utils';
 @Component({
   selector: 'app-profile',
   imports: [ImageCropperComponent, ReactiveFormsModule, RowComponent, ColComponent, InputComponent, ButtonComponent, SwalComponent, SwalPortalDirective, SwalDirective, PasswordFormComponent],
@@ -37,6 +38,7 @@ export class ProfileComponent {
   //Image Cropper
   imageChangedEvent: any = '';
   croppedImage: string | null = null;
+  onImageError = onImageError;
 
   //User Store
   store = inject(UserStore);

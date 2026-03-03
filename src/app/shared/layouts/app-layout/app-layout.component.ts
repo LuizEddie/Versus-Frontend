@@ -6,7 +6,7 @@ import { DropdownItemComponent } from "../../components/layout/dropdown/dropdown
 import { SwalComponent, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
 import { AuthService } from '../../services/auth/auth.service';
 import { UserStore } from '../../stores/user-store/user-store';
-
+import { onImageError } from '../../utils/utils';
 @Component({
   selector: 'app-app-layout',
   imports: [RouterOutlet, LinkComponent, RouterLinkWithHref, DropdownComponent, DropdownItemComponent, SwalComponent, SwalDirective],
@@ -16,6 +16,7 @@ import { UserStore } from '../../stores/user-store/user-store';
 export class AppLayoutComponent {
 
   store = inject(UserStore);
+  onImageError = onImageError;
   
   constructor(private authService: AuthService ){
 

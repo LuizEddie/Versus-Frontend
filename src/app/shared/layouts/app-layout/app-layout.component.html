@@ -33,7 +33,7 @@
 
 <ng-template #profileDropdown>
     <li>
-        <img alt="Perfil" class="w-10 h-10 rounded-full" [src]="store.user()?.photoPath || 'profile/default.png'" />
+        <img alt="Perfil" class="w-10 h-10 rounded-full" [src]="store.user()?.photoPath || 'profile/default.png'" (error)="onImageError($event)"/>
     </li>
 </ng-template>
 
