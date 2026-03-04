@@ -59,9 +59,9 @@ export class InputComponent {
       if (!target.files || target.files.length === 0) return;
 
       const files = Array.from(target.files);
-      
+
       const result = this.multiple ? files : [files[0]];
-      
+
       this.onChange(result);
       this.onTouched();
 
@@ -81,9 +81,12 @@ export class InputComponent {
     this.nativeInput?.nativeElement.click();
   }
 
-  resetFileInput(){
-    this.renderInput = false;
-    setTimeout(() => this.renderInput = true);
+  resetFileInput() {
+    if (this.nativeInput?.nativeElement) {
+      this.nativeInput.nativeElement.value = '';
+    }
+    // this.renderInput = false;
+    // setTimeout(() => this.renderInput = true);
   }
 
   // Funções utilitárias
