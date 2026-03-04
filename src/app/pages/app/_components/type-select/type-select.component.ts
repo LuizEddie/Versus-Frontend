@@ -1,5 +1,5 @@
 import { Component, Input, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { Type } from './_models/type.models';
 import { TypeService } from './_services/type.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
@@ -9,7 +9,7 @@ import { getValidationMessage } from '../../../../shared/utils/validation-messag
 
 @Component({
   selector: 'app-type-select',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './type-select.component.html',
   styleUrl: './type-select.component.css',
   standalone: true
@@ -19,8 +19,6 @@ export class TypeSelectComponent implements ControlValueAccessor {
   @Input() name: string = "typeId";
 
   disabled: boolean = false;
-  value: any = '';
-
   types: Type[] = [];
 
   constructor(@Optional() @Self() public ngControl: NgControl, private typeService: TypeService, private toastService: ToastService){
@@ -33,29 +31,12 @@ export class TypeSelectComponent implements ControlValueAccessor {
     this.getTypes();
   }
 
-  onChange = (value: any) => {};
-  onTouched = () => {};
-
-  writeValue(value: any): void {
-    this.value = value ?? '';
-  }
-
-  registerOnChange(fn: any): void{
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
+  writeValue(): void {}
+  registerOnChange(): void {}
+  registerOnTouched(): void {}
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
-  }
-
-  handleSelect(event: Event){
-    const target = event.target as HTMLSelectElement;
-    this.value = target.value;
-    this.onChange(this.value);
   }
 
   getTypes(){
@@ -65,8 +46,8 @@ export class TypeSelectComponent implements ControlValueAccessor {
     })
   }
 
-  get control(){
-    return this.ngControl?.control;
+  get control(): FormControl{
+    return this.ngControl?.control as FormControl;
   }
 
   get invalid(){

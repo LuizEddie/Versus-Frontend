@@ -1,6 +1,6 @@
 import { Component, Input, Optional, Self } from '@angular/core';
 import { WinCondition } from './_models/win-condition.models';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { WinConditionService } from './_services/win-condition.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { handleErrorMessages } from '../../../../shared/utils/api-error-messages';
@@ -8,17 +8,16 @@ import { getValidationMessage } from '../../../../shared/utils/validation-messag
 
 @Component({
   selector: 'app-win-condition-select',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './win-condition-select.component.html',
-  styleUrl: './win-condition-select.component.css'
+  styleUrl: './win-condition-select.component.css',
+  standalone: true
 })
 export class WinConditionSelectComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
-  @Input() name: string = "typeId";
+  @Input() name: string = "winConditionId";
 
   disabled: boolean = false;
-  value: any = "";
-
   winConditions: WinCondition[] = [];
 
   constructor(@Optional() @Self() public ngControl: NgControl, private winConditionService: WinConditionService, private toastService: ToastService){
@@ -31,29 +30,14 @@ export class WinConditionSelectComponent implements ControlValueAccessor {
     this.getWinConditions();
   }
 
-  onChange = (value: any) => {};
-  onTouched = () => {};
+  writeValue(): void {}
 
-  writeValue(value: any): void {
-    this.value = value ?? "";
-  }
+  registerOnChange(): void{}
 
-  registerOnChange(fn: any): void{
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
+  registerOnTouched(): void {}
 
   setDisabledState(isDisabled: boolean): void{
     this.disabled = isDisabled;
-  }
-
-  handleSelect(event: Event){
-    const target = event.target as HTMLSelectElement;
-    this.value = target.value;
-    this.onChange(this.value);
   }
 
   getWinConditions(){
@@ -63,8 +47,8 @@ export class WinConditionSelectComponent implements ControlValueAccessor {
     })
   }
 
-  get control(){
-    return this.ngControl?.control;
+  get control(): FormControl{
+    return this.ngControl?.control as FormControl;
   }
 
   get invalid(){

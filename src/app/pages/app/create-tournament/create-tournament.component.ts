@@ -28,8 +28,8 @@ export class CreateTournamentComponent {
       name: ['', [Validators.required]],
       players: this.fb.array([]),
       tournamentSpec: this.fb.group({
-        winConditionId: [''],
-        typeId: ['', [Validators.required]]
+        winConditionId: [null],
+        typeId: [null, [Validators.required]]
       })
     });
 
