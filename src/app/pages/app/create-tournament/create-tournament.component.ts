@@ -9,6 +9,8 @@ import { RowComponent } from "../../../shared/components/layout/row/row.componen
 import { ColComponent } from "../../../shared/components/layout/col/col.component";
 import { TypeSelectComponent } from '../_components/type-select/type-select.component';
 import { WinConditionSelectComponent } from '../_components/win-condition-select/win-condition-select.component';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-tournament',
@@ -21,7 +23,7 @@ export class CreateTournamentComponent {
   formData!: FormGroup;
   disableForm: boolean = false;
 
-  constructor(private fb: FormBuilder, private toast: ToastService, private createTournamentService: CreateTournamentService) {
+  constructor(private fb: FormBuilder, private toast: ToastService, private createTournamentService: CreateTournamentService, private router: Router) {
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       players: this.fb.array([]),
@@ -104,6 +106,29 @@ export class CreateTournamentComponent {
         this.addPlayer();
         this.toast.finishToast(toastId, { message: `${response.message}`, type: 'success', duration: 500, closeable: true, persistent: false })
         this.disableForm = false;
+
+        Swal.fire({
+          title: "Torneio criado com sucesso. O que deseja fazer?",
+          showCancelButton: true,
+          cancelButtonColor: "red",
+          cancelButtonText: "Criar novo torneio",
+          showConfirmButton: true,
+          confirmButtonColor: "green",
+          confirmButtonText: "Ir para o torneio",
+          showDenyButton: true,
+          denyButtonColor: 'blue',
+          denyButtonText: 'Voltar para o início'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.router.navigate([`/tournament-data/${response.data.id}`])
+            return;
+          }
+
+          if (result.isDenied) {
+            this.router.navigate(['/home']);
+            return;
+          }
+        });
       },
       error: (err: any) => {
         this.toast.finishToast(toastId, { message: handleErrorMessages(err), type: 'warning', duration: 5000, closeable: true, persistent: false })

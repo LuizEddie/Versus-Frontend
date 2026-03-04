@@ -3,13 +3,13 @@
         Condição de vitória
         @if(required) { <span class="text-red-600">*</span>}
     </label>
-    <select [name]="name" [id]="name" [disabled]="disabled" (change)="handleSelect($event)"
+    <select [name]="name" [id]="name" [disabled]="disabled" [value]="value" (change)="handleSelect($event)"
     (blur)="onTouched()" class="border border-gray-300 bg-white rounded-lg p-1 
     focus:outline-none focus:ring transition-all
     disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed">
     <option value="">Selecione um valor...</option>
     @for(w of winConditions; track w.id){
-        <option [value]="w.id" [selected]="w.id === value">{{ w.name }}</option>
+        <option [value]="w.id">{{ w.name }}</option>
     }
 </select>
 <div class="text-sm text-yellow-600 mt-1">
